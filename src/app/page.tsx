@@ -121,7 +121,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-16">
           <div className="text-center">
             <FadeIn>
-              <h1 className="text-6xl md:text-7xl font-bold tracking-tight text-gray-900 leading-[1.1] mx-auto text-center">
+              <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight text-gray-900 leading-[1.1] mx-auto text-center">
                 Your customers text.
                 <br />
                 You&apos;re on a job.
@@ -131,7 +131,7 @@ export default function LandingPage() {
             </FadeIn>
 
             <FadeIn delay={0.1}>
-              <p className="mt-6 text-lg sm:text-xl text-gray-500 max-w-lg mx-auto text-center leading-relaxed">
+              <p className="mt-6 text-xl md:text-2xl text-gray-500 max-w-lg mx-auto text-center leading-relaxed">
                 AI that responds to new leads in seconds, follows up on cold
                 quotes, and re-engages lapsed customers — in your voice, 24/7.
               </p>
@@ -305,7 +305,7 @@ export default function LandingPage() {
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
         <FadeIn>
           <div className="text-center max-w-xl mx-auto mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
               Built for businesses that run lean
             </h2>
           </div>
@@ -370,7 +370,7 @@ export default function LandingPage() {
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
         <FadeIn>
           <div className="rounded-2xl bg-[#1a1a2e] px-6 sm:px-12 py-12 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
               Ready to respond to every lead, around the clock.
             </h2>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -480,7 +480,7 @@ function Step({
         </div>
       </div>
       <h3 className="text-2xl font-bold text-gray-900">{title}</h3>
-      <p className="mt-3 text-lg text-gray-600 leading-relaxed">
+      <p className="mt-3 text-lg text-gray-600 leading-loose">
         {description}
       </p>
     </div>
@@ -504,7 +504,7 @@ function Objection({
           <h3 className="text-xl font-semibold text-gray-900">
             {question}
           </h3>
-          <p className="mt-3 text-lg text-gray-600 leading-relaxed">
+          <p className="mt-3 text-lg text-gray-600 leading-loose">
             {answer}
           </p>
         </div>
