@@ -61,15 +61,15 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Nav */}
-      <header className="relative max-w-6xl mx-auto px-4 sm:px-6 py-5">
+      <header className="relative max-w-6xl mx-auto px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo — left */}
           <Link href="/" className="shrink-0">
             <Image
               src="/serveiq-logo.png"
               alt="ServeIQ"
-              width={180}
-              height={50}
+              width={200}
+              height={52}
               priority
               unoptimized
               className="object-contain"
@@ -131,7 +131,7 @@ export default function LandingPage() {
             </FadeIn>
 
             <FadeIn delay={0.1}>
-              <p className="mt-6 text-lg sm:text-xl text-gray-500 max-w-[600px] mx-auto text-center leading-relaxed">
+              <p className="mt-6 text-lg sm:text-xl text-gray-500 max-w-lg mx-auto text-center leading-relaxed">
                 AI that responds to new leads in seconds, follows up on cold
                 quotes, and re-engages lapsed customers — in your voice, 24/7.
               </p>
@@ -177,7 +177,7 @@ export default function LandingPage() {
 
       {/* Marquee */}
       <section className="border-y border-gray-100 bg-gray-50/50 py-3 overflow-hidden">
-        <Marquee className="[--duration:30s]" pauseOnHover>
+        <Marquee className="[--duration:30s]" pauseOnHover repeat={2}>
           {MARQUEE_ITEMS.map((item) => (
             <span
               key={item}
@@ -191,9 +191,9 @@ export default function LandingPage() {
       </section>
 
       {/* Stats Bar */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16 md:py-24">
         <FadeIn>
-          <div className="border border-gray-200 rounded-2xl py-10 px-6">
+          <div className="border border-gray-200 rounded-2xl py-8 px-6">
             <div className="grid grid-cols-3 gap-0">
               <StatBlock
                 icon={Timer}
@@ -221,10 +221,10 @@ export default function LandingPage() {
 
       {/* How It Works */}
       <section className="bg-gray-50/80 border-y border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
           <FadeIn>
             <div className="text-center max-w-xl mx-auto mb-12">
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
                 Up and running in 20 minutes
               </h2>
               <p className="mt-3 text-sm text-gray-500">
@@ -264,10 +264,10 @@ export default function LandingPage() {
       </section>
 
       {/* Why ServeIQ */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
         <FadeIn>
           <div className="text-center max-w-xl mx-auto mb-12">
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
               Every question you&apos;re probably asking
             </h2>
           </div>
@@ -302,10 +302,10 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
         <FadeIn>
           <div className="text-center max-w-xl mx-auto mb-12">
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
               Everything your front desk should be doing
             </h2>
             <p className="mt-3 text-sm text-gray-500">
@@ -341,7 +341,7 @@ export default function LandingPage() {
 
       {/* Lost Revenue Calculator */}
       <section className="bg-[#1a1a2e]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
           <FadeIn>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 sm:gap-16 text-center">
               <div>
@@ -370,10 +370,10 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
         <FadeIn>
           <div className="rounded-2xl bg-[#1a1a2e] px-6 sm:px-12 py-12 text-center">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
               Stop losing leads to slow replies
             </h2>
             <p className="mt-3 text-sm text-gray-400 max-w-lg mx-auto">
