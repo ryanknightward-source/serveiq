@@ -68,7 +68,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
-          "var(--font-inter)",
+          "var(--font-nunito)",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
