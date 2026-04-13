@@ -223,18 +223,18 @@ export default function LandingPage() {
       <section className="bg-gray-50/80 border-y border-gray-100">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
           <FadeIn>
-            <div className="text-center max-w-xl mx-auto mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
                 Up and running in 20 minutes
               </h2>
-              <p className="mt-3 text-sm text-gray-500">
+              <p className="mt-4 text-xl text-gray-600">
                 No developers needed. No complicated setup. Just tell ServeIQ
                 about your business and let it work.
               </p>
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <FadeIn delay={0}>
               <Step
                 number={1}
@@ -266,14 +266,14 @@ export default function LandingPage() {
       {/* Why ServeIQ */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
         <FadeIn>
-          <div className="text-center max-w-xl mx-auto mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
+          <div className="text-center max-w-xl mx-auto mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
               Common questions
             </h2>
           </div>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FadeIn delay={0}>
             <Objection
               question="Will my customers know it's AI?"
@@ -473,17 +473,14 @@ function Step({
   description: string;
 }) {
   return (
-    <div className="relative rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-lg bg-[#1a1a2e] flex items-center justify-center text-amber-400 shadow-md shadow-gray-200">
-          <Icon className="w-5 h-5" />
+    <div className="relative rounded-xl border border-gray-200 bg-white p-8 shadow-sm text-center">
+      <div className="flex justify-center mb-5">
+        <div className="w-14 h-14 rounded-full bg-amber-500 flex items-center justify-center text-white text-2xl font-bold shadow-md">
+          {number}
         </div>
-        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-          Step {number}
-        </span>
       </div>
-      <h3 className="text-[15px] font-semibold text-gray-900">{title}</h3>
-      <p className="mt-1.5 text-sm text-gray-600 leading-relaxed">
+      <h3 className="text-2xl font-bold text-gray-900">{title}</h3>
+      <p className="mt-3 text-lg text-gray-600 leading-relaxed">
         {description}
       </p>
     </div>
@@ -498,16 +495,16 @@ function Objection({
   answer: string;
 }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-gray-50 p-6">
-      <div className="flex items-start gap-3">
-        <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-          <HelpCircle className="w-4 h-4 text-amber-600" />
+    <div className="rounded-xl border border-gray-200 bg-gray-50 p-8">
+      <div className="flex items-start gap-4">
+        <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <HelpCircle className="w-5 h-5 text-amber-600" />
         </div>
         <div>
-          <h3 className="text-[15px] font-semibold text-gray-900">
+          <h3 className="text-xl font-semibold text-gray-900">
             {question}
           </h3>
-          <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+          <p className="mt-3 text-lg text-gray-600 leading-relaxed">
             {answer}
           </p>
         </div>
