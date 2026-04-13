@@ -226,19 +226,18 @@ export default function DemoPage() {
     setEscalation(null);
   }
 
-  const businessName = loaded && config.businessName ? config.businessName : "Your Business";
+  const businessName = loaded && config.businessName ? config.businessName : "ServeIQ AI";
 
   return (
     <AppShell title="Live Demo">
       <div className="max-w-5xl mx-auto">
         <div className="mb-6 flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <h2 className="text-2xl font-semibold tracking-tight text-gray-900">
+            <h2 className="text-4xl font-bold tracking-tight text-gray-900">
               Live demo
             </h2>
             <p className="text-gray-500 mt-1.5 text-sm max-w-2xl">
-              Type a message as if you were a customer texting in. ServeIQ will reply
-              using your business profile, pricing, and tone.
+              Type a message the way one of your customers would text you. ServeIQ replies instantly.
             </p>
           </div>
           {messages.length > 0 && (
@@ -291,16 +290,15 @@ export default function DemoPage() {
         )}
 
         {loaded && !config.businessName && (
-          <div className="mb-4 flex items-start gap-3 rounded-lg border-l-4 border-amber-500 bg-white px-4 py-3 shadow-sm">
-            <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+          <div className="mb-4 flex items-start gap-3 rounded-lg border-l-4 border-blue-500 bg-[#EFF6FF] px-4 py-3 shadow-sm">
+            <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
             <div className="flex-1 text-sm">
               <div className="font-medium text-gray-900">
-                No business configured yet
+                Want the AI to sound like your business?
               </div>
               <p className="text-gray-500 text-xs mt-0.5">
-                The AI will still respond, but it&apos;ll be more impressive once you fill in your
-                services and tone.{" "}
-                <Link href="/setup" className="font-medium text-amber-600 underline">
+                Add your services and tone in Setup — takes 20 minutes.{" "}
+                <Link href="/setup" className="font-medium text-blue-600 underline">
                   Open setup
                 </Link>
               </p>
@@ -346,8 +344,8 @@ export default function DemoPage() {
                       Send a customer message
                     </div>
                     <p className="text-xs text-gray-500 mt-1 max-w-xs">
-                      Pretend you&apos;re a customer texting your business. ServeIQ will reply
-                      automatically.
+                      Type a message the way one of your customers would text you.
+                      ServeIQ replies instantly.
                     </p>
                     <div className="mt-5 space-y-2 w-full max-w-sm">
                       {SUGGESTIONS.map((s) => (
