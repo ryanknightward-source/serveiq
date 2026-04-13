@@ -64,14 +64,14 @@ export default function LandingPage() {
       <header className="relative max-w-6xl mx-auto px-4 sm:px-6 py-5">
         <div className="flex items-center justify-between">
           {/* Logo — left */}
-          <Link href="/" className="flex items-center gap-2 min-w-0 shrink-0">
+          <Link href="/" className="flex items-center shrink-0 w-[160px]">
             <Image
               src="/serveiq-logo.png"
               alt="ServeIQ"
               width={160}
-              height={40}
+              height={44}
               priority
-              className="h-10 w-auto"
+              style={{ objectFit: "contain" }}
             />
           </Link>
 
