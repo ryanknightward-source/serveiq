@@ -77,22 +77,22 @@ export default function LandingPage() {
           </Link>
 
           {/* Nav links — center */}
-          <nav className="hidden sm:flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
+          <nav className="hidden sm:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <Link
               href="/pricing"
-              className="text-sm text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
+              className="text-base font-medium text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
             >
               Pricing
             </Link>
             <Link
               href="/setup"
-              className="text-sm text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
+              className="text-base font-medium text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
             >
               Setup
             </Link>
             <Link
               href="/dashboard"
-              className="text-sm text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
+              className="text-base font-medium text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
             >
               Dashboard
             </Link>
