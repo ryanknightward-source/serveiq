@@ -68,10 +68,11 @@ export default function LandingPage() {
             <Image
               src="/serveiq-logo.png"
               alt="ServeIQ"
-              width={160}
-              height={44}
+              width={180}
+              height={50}
               priority
-              style={{ objectFit: "contain" }}
+              className="object-contain"
+              style={{ background: "transparent" }}
             />
           </Link>
 
