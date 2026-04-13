@@ -66,10 +66,10 @@ export default function LandingPage() {
           <Image
             src="/serveiq-logo.png"
             alt="ServeIQ"
-            width={540}
-            height={360}
+            width={160}
+            height={40}
             priority
-            className="h-9 w-auto"
+            className="h-10 w-auto"
           />
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2">
