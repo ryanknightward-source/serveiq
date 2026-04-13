@@ -71,8 +71,8 @@ export default function LandingPage() {
               width={180}
               height={50}
               priority
+              unoptimized
               className="object-contain"
-              style={{ background: "transparent" }}
             />
           </Link>
 
