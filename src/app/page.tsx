@@ -64,12 +64,12 @@ export default function LandingPage() {
       <header className="relative max-w-6xl mx-auto px-4 sm:px-6 py-5">
         <div className="flex items-center justify-between">
           {/* Logo — left */}
-          <Link href="/" className="flex items-center shrink-0">
+          <Link href="/" className="shrink-0">
             <Image
               src="/serveiq-logo.png"
               alt="ServeIQ"
-              width={140}
-              height={36}
+              width={160}
+              height={44}
               priority
               style={{ objectFit: "contain" }}
             />
@@ -120,7 +120,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-16">
           <div className="text-center">
             <FadeIn>
-              <h1 className="text-6xl md:text-7xl font-bold tracking-tight text-gray-900 leading-[1.1]">
+              <h1 className="text-6xl md:text-7xl font-bold tracking-tight text-gray-900 leading-[1.1] mx-auto text-center">
                 Your customers text.
                 <br />
                 You&apos;re on a job.
@@ -130,7 +130,7 @@ export default function LandingPage() {
             </FadeIn>
 
             <FadeIn delay={0.1}>
-              <p className="mt-6 text-lg sm:text-xl text-gray-500 max-w-[600px] mx-auto leading-relaxed">
+              <p className="mt-6 text-lg sm:text-xl text-gray-500 max-w-[600px] mx-auto text-center leading-relaxed">
                 AI that responds to new leads in seconds, follows up on cold
                 quotes, and re-engages lapsed customers — in your voice, 24/7.
               </p>
