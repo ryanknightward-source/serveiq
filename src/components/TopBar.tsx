@@ -21,11 +21,12 @@ export function TopBar({ title }: { title?: string }) {
           className="shrink-0 md:hidden"
         >
           <Image
-            src="/serveiq-mark.svg"
+            src="/serveiq-logo.png"
             alt="ServeIQ"
-            width={26}
-            height={26}
+            width={390}
+            height={260}
             priority
+            className="h-7 w-auto"
           />
         </Link>
         {loaded ? (

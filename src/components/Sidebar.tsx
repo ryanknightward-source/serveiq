@@ -39,13 +39,14 @@ export function Sidebar() {
     <ShadcnSidebar collapsible="offcanvas">
       <SidebarHeader className="border-b border-sidebar-border/60">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-lg shadow-black/20 shrink-0">
+          <div className="w-10 h-10 rounded-lg overflow-hidden shadow-lg shadow-black/20 shrink-0">
             <Image
-              src="/serveiq-mark.svg"
+              src="/serveiq-logo.png"
               alt="ServeIQ"
-              width={28}
-              height={28}
+              width={480}
+              height={320}
               priority
+              className="h-8 w-auto object-contain"
             />
           </div>
           <div>

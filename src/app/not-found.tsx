@@ -7,11 +7,12 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-amber-50/30 to-white flex flex-col items-center justify-center px-4 py-16 text-center">
       <Image
-        src="/serveiq-logo.svg"
+        src="/serveiq-logo.png"
         alt="ServeIQ"
-        width={180}
-        height={50}
+        width={540}
+        height={360}
         priority
+        className="h-12 w-auto"
       />
       <div className="mt-6 text-xs font-semibold uppercase tracking-wider text-amber-600">
         404

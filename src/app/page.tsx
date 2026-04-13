@@ -64,10 +64,10 @@ export default function LandingPage() {
       <header className="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between gap-3">
         <Link href="/" className="flex items-center gap-2 min-w-0">
           <Image
-            src="/serveiq-logo.svg"
+            src="/serveiq-logo.png"
             alt="ServeIQ"
-            width={140}
-            height={40}
+            width={540}
+            height={360}
             priority
             className="h-9 w-auto"
           />
