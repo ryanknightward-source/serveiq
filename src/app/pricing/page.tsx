@@ -139,11 +139,11 @@ export default function PricingPage() {
             </div>
             <div>
               <div className="text-sm font-semibold text-gray-900">
-                14-day money-back guarantee
+                14-day free trial, no credit card required
               </div>
               <p className="text-xs text-gray-500 mt-0.5">
-                Try any plan for two weeks. If ServeIQ doesn&apos;t earn its keep,
-                we&apos;ll refund you in full — no hoops.
+                Try any plan for two weeks — no card on file, no hoops. If
+                ServeIQ doesn&apos;t earn its keep, just walk away.
               </p>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function PricingPage() {
             <p className="mt-2 text-sm text-gray-500">
               Can&apos;t find what you&apos;re looking for?{" "}
               <a
-                href="mailto:hello@serveiq.app"
+                href="mailto:ryanknightward@gmail.com"
                 className="text-amber-600 hover:text-amber-700 font-medium"
               >
                 Email us

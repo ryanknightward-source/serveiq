@@ -345,7 +345,7 @@ export default function SetupPage() {
                   }
                   placeholder={`Hey Sarah! yeah we can swing by tomorrow morning, $89 covers it. Want me to put you on the schedule?\n\nMorning! sorry for the wait — pulling up to your place around 10. cold one waiting? haha`}
                   rows={7}
-                  className="font-[450] text-[13.5px] leading-relaxed"
+                  className="font-normal text-[13.5px] leading-relaxed"
                 />
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                   <span className="text-[11px] text-gray-500">

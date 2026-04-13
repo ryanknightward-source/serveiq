@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
   if (!process.env.ANTHROPIC_API_KEY) {
     console.error("[/api/respond] ANTHROPIC_API_KEY missing");
     return NextResponse.json(
-      { error: "The AI service is not configured. Please contact support." },
+      { error: "The AI service is not configured. Please email ryanknightward@gmail.com for help." },
       { status: 503 }
     );
   }
@@ -155,7 +155,7 @@ export async function POST(req: NextRequest) {
     if (err instanceof Anthropic.APIError) {
       if (err.status === 401) {
         return NextResponse.json(
-          { error: "The AI service is not configured. Please contact support." },
+          { error: "The AI service is not configured. Please email ryanknightward@gmail.com for help." },
           { status: 503 }
         );
       }

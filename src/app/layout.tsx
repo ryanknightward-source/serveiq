@@ -1,12 +1,40 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
+
+const siteUrl = "https://getserveiq.net";
+
 export const metadata: Metadata = {
-  title: "ServeIQ — AI lead response for service businesses",
+  title: {
+    default: "ServeIQ — AI lead response for service businesses",
+    template: "%s | ServeIQ",
+  },
   description:
     "AI-powered SMS and email automation for pest control and pool service companies. Respond to leads, follow up cold quotes, and re-engage lapsed customers automatically.",
   applicationName: "ServeIQ",
   formatDetection: { telephone: false },
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    type: "website",
+    siteName: "ServeIQ",
+    title: "ServeIQ — AI lead response for service businesses",
+    description:
+      "AI-powered SMS and email automation for pest control and pool service companies. Respond to leads, follow up cold quotes, and re-engage lapsed customers automatically.",
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary",
+    title: "ServeIQ — AI lead response for service businesses",
+    description:
+      "AI-powered SMS and email automation for pest control and pool service companies.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
@@ -21,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body>{children}</body>
     </html>
   );
