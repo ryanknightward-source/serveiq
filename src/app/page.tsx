@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
@@ -64,15 +63,12 @@ export default function LandingPage() {
       <header className="relative max-w-6xl mx-auto px-4 sm:px-6 py-5">
         <div className="flex items-center justify-between">
           {/* Logo — left */}
-          <Link href="/" className="flex items-center shrink-0 w-[160px]">
-            <Image
-              src="/serveiq-logo.png"
-              alt="ServeIQ"
-              width={160}
-              height={44}
-              priority
-              style={{ objectFit: "contain" }}
-            />
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <MessageSquare className="w-6 h-6 text-[#1a1a2e]" />
+            <span className="text-xl font-bold">
+              <span className="text-[#1a1a2e]">Serve</span>
+              <span className="text-amber-600">IQ</span>
+            </span>
           </Link>
 
           {/* Nav links — center */}
@@ -118,44 +114,44 @@ export default function LandingPage() {
         </div>
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-16">
-          <div className="max-w-3xl">
+          <div className="text-center">
             <FadeIn>
-              <h1 className="text-4xl sm:text-5xl md:text-[3.5rem] font-semibold tracking-tight text-gray-900 leading-[1.1]">
+              <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 leading-[1.1]">
                 Your customers text.
                 <br />
                 You&apos;re on a job.
                 <br />
-                <span className="text-amber-600">ServeIQ texts back.</span>
+                <span className="text-[#D97706]">ServeIQ texts back.</span>
               </h1>
             </FadeIn>
 
             <FadeIn delay={0.1}>
-              <p className="mt-6 text-lg sm:text-xl text-gray-600 max-w-2xl leading-relaxed">
+              <p className="mt-6 text-lg sm:text-xl text-gray-500 max-w-[600px] mx-auto leading-relaxed">
                 AI that responds to new leads in seconds, follows up on cold
                 quotes, and re-engages lapsed customers — in your voice, 24/7.
               </p>
             </FadeIn>
 
             <FadeIn delay={0.2}>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   href="/setup"
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#1a1a2e] hover:bg-[#2d2d4e] text-white text-sm font-medium shadow-lg shadow-gray-300/50 transition-all hover:shadow-xl hover:shadow-gray-300/60"
                 >
-                  Set up your AI in 60 seconds
+                  Start free trial
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/demo"
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 text-sm font-medium text-gray-900 transition-colors"
                 >
-                  See it in action
+                  Watch demo
                 </Link>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.3}>
-              <ul className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-600">
+              <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-gray-600">
                 <li className="inline-flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-500" />
                   No coding required
@@ -190,28 +186,30 @@ export default function LandingPage() {
       </section>
 
       {/* Stats Bar */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
         <FadeIn>
-          <div className="grid grid-cols-3 gap-0">
-            <StatBlock
-              icon={Timer}
-              prefix="< "
-              value={30}
-              suffix=" sec"
-              label="Average response time"
-              highlight
-            />
-            <StatBlock
-              icon={Clock}
-              staticValue={47}
-              suffix=" min"
-              label="Industry average response time"
-            />
-            <StatBlock
-              icon={Activity}
-              text="24/7"
-              label="Always on, even at 2 AM"
-            />
+          <div className="border border-gray-200 rounded-2xl py-10 px-6">
+            <div className="grid grid-cols-3 gap-0">
+              <StatBlock
+                icon={Timer}
+                prefix="< "
+                value={30}
+                suffix=" sec"
+                label="Average response time"
+                highlight
+              />
+              <StatBlock
+                icon={Clock}
+                staticValue={47}
+                suffix=" min"
+                label="Industry average response time"
+              />
+              <StatBlock
+                icon={Activity}
+                text="24/7"
+                label="Always on, even at 2 AM"
+              />
+            </div>
           </div>
         </FadeIn>
       </section>
