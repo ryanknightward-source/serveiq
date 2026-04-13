@@ -158,7 +158,7 @@ export default function LandingPage() {
                 </li>
                 <li className="inline-flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  14-day free trial
+                  14-day free trial, no credit card required
                 </li>
               </ul>
             </FadeIn>
@@ -195,7 +195,7 @@ export default function LandingPage() {
             />
             <StatBlock
               icon={Clock}
-              value={47}
+              staticValue={47}
               suffix=" min"
               label="Industry average response time"
             />
@@ -344,6 +344,7 @@ export default function LandingPage() {
 function StatBlock({
   icon: Icon,
   value,
+  staticValue,
   prefix,
   suffix,
   text,
@@ -352,6 +353,7 @@ function StatBlock({
 }: {
   icon: React.ComponentType<{ className?: string }>;
   value?: number;
+  staticValue?: number;
   prefix?: string;
   suffix?: string;
   text?: string;
@@ -373,7 +375,11 @@ function StatBlock({
         ) : (
           <>
             {prefix}
-            <NumberTicker value={value!} delay={0.3} />
+            {staticValue != null ? (
+              <span className="text-4xl font-bold text-foreground">{staticValue}</span>
+            ) : (
+              <NumberTicker value={value!} delay={0.3} />
+            )}
             {suffix}
           </>
         )}
