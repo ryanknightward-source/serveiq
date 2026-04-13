@@ -16,6 +16,7 @@ import {
   Clock,
   Timer,
   Activity,
+  HelpCircle,
 } from "lucide-react";
 import { Marquee } from "@/components/ui/marquee";
 import { NumberTicker } from "@/components/ui/number-ticker";
@@ -252,6 +253,44 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Why ServeIQ */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+        <FadeIn>
+          <div className="text-center max-w-xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900">
+              Every question you&apos;re probably asking
+            </h2>
+          </div>
+        </FadeIn>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <FadeIn delay={0}>
+            <Objection
+              question="Won't my customers know it's AI?"
+              answer="Not if it sounds like you. During setup you train ServeIQ with examples of how you actually text customers. It matches your tone, your style, even your sign-offs. Most customers have no idea."
+            />
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <Objection
+              question="What if it says something wrong?"
+              answer="It only works with information you give it — your services, your prices, your policies. If anything sounds off, you update it in 30 seconds. And if a message is urgent, it flags you immediately instead of guessing."
+            />
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <Objection
+              question="Is it worth $99 a month?"
+              answer="The average pest control or pool company misses 8-12 leads a month from slow response times. At $150 per job that's $1,200-$1,800 in lost revenue every month. One extra job booked pays for ServeIQ. Most customers see 3-5."
+            />
+          </FadeIn>
+          <FadeIn delay={0.3}>
+            <Objection
+              question="I'm too busy to set it up"
+              answer="Setup takes 20 minutes. Add your services, pricing, and a few examples of how you text customers. That's it. No technical knowledge required."
+            />
+          </FadeIn>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
         <FadeIn>
@@ -286,6 +325,36 @@ export default function LandingPage() {
               title="Review requests on autopilot"
               description="Asks happy customers for a Google review at exactly the right moment."
             />
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* Lost Revenue Calculator */}
+      <section className="bg-[#1a1a2e]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+          <FadeIn>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 sm:gap-16 text-center">
+              <div>
+                <p className="text-4xl sm:text-5xl font-bold text-amber-400 tracking-tight">
+                  8–12 leads
+                </p>
+                <p className="mt-3 text-sm sm:text-base text-gray-400 max-w-xs mx-auto">
+                  The average service company misses every month from slow
+                  response times
+                </p>
+              </div>
+              <div>
+                <p className="text-4xl sm:text-5xl font-bold text-amber-400 tracking-tight">
+                  $1,200–$1,800
+                </p>
+                <p className="mt-3 text-sm sm:text-base text-gray-400 max-w-xs mx-auto">
+                  In lost revenue. Every single month.
+                </p>
+              </div>
+            </div>
+            <p className="mt-10 text-center text-xs text-gray-500">
+              ServeIQ pays for itself with one extra job.
+            </p>
           </FadeIn>
         </div>
       </section>
@@ -414,6 +483,32 @@ function Step({
       <p className="mt-1.5 text-sm text-gray-600 leading-relaxed">
         {description}
       </p>
+    </div>
+  );
+}
+
+function Objection({
+  question,
+  answer,
+}: {
+  question: string;
+  answer: string;
+}) {
+  return (
+    <div className="rounded-xl border border-gray-200 bg-gray-50 p-6">
+      <div className="flex items-start gap-3">
+        <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <HelpCircle className="w-4 h-4 text-amber-600" />
+        </div>
+        <div>
+          <h3 className="text-[15px] font-semibold text-gray-900">
+            {question}
+          </h3>
+          <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+            {answer}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
