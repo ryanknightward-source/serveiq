@@ -68,8 +68,8 @@ export default function LandingPage() {
             <Image
               src="/serveiq-logo.png"
               alt="ServeIQ"
-              width={200}
-              height={52}
+              width={220}
+              height={58}
               priority
               unoptimized
               className="object-contain"
