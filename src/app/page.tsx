@@ -268,7 +268,7 @@ export default function LandingPage() {
         <FadeIn>
           <div className="text-center max-w-xl mx-auto mb-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
-              Every question you&apos;re probably asking
+              Common questions
             </h2>
           </div>
         </FadeIn>
@@ -276,13 +276,13 @@ export default function LandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <FadeIn delay={0}>
             <Objection
-              question="Won't my customers know it's AI?"
+              question="Will my customers know it's AI?"
               answer="Not if it sounds like you. During setup you train ServeIQ with examples of how you actually text customers. It matches your tone, your style, even your sign-offs. Most customers have no idea."
             />
           </FadeIn>
           <FadeIn delay={0.1}>
             <Objection
-              question="What if it says something wrong?"
+              question="What if the AI gives incorrect information?"
               answer="It only works with information you give it — your services, your prices, your policies. If anything sounds off, you update it in 30 seconds. And if a message is urgent, it flags you immediately instead of guessing."
             />
           </FadeIn>
@@ -294,7 +294,7 @@ export default function LandingPage() {
           </FadeIn>
           <FadeIn delay={0.3}>
             <Objection
-              question="I'm too busy to set it up"
+              question="How long does setup take?"
               answer="Setup takes 20 minutes. Add your services, pricing, and a few examples of how you text customers. That's it. No technical knowledge required."
             />
           </FadeIn>
@@ -306,11 +306,8 @@ export default function LandingPage() {
         <FadeIn>
           <div className="text-center max-w-xl mx-auto mb-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
-              Everything your front desk should be doing
+              Built for businesses that run lean
             </h2>
-            <p className="mt-3 text-sm text-gray-500">
-              But isn&apos;t — because you don&apos;t have one.
-            </p>
           </div>
         </FadeIn>
 
@@ -374,12 +371,8 @@ export default function LandingPage() {
         <FadeIn>
           <div className="rounded-2xl bg-[#1a1a2e] px-6 sm:px-12 py-12 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-              Stop losing leads to slow replies
+              Ready to respond to every lead, around the clock.
             </h2>
-            <p className="mt-3 text-sm text-gray-400 max-w-lg mx-auto">
-              Every minute you wait, your competitor gets closer. Set up ServeIQ
-              in 20 minutes and never miss another lead.
-            </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/setup"
