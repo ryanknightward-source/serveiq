@@ -3,10 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import {
   X,
-  Send,
+  ArrowUp,
   Phone,
   Bot,
-  Loader2,
   Calendar,
   CheckCircle2,
   MessageSquare,
@@ -14,6 +13,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { AppShell } from "@/components/AppShell";
 import { useBusinessConfig } from "@/lib/useBusinessConfig";
 import {
@@ -24,8 +24,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { appendEvent } from "@/lib/events";
 import {
   detectEscalation,
@@ -47,6 +47,51 @@ const SUGGESTIONS = [
   "My pool is turning green and I have a party Saturday — can you help?",
   "Got a quote from you last month, still thinking. What's the best price you can do?",
 ];
+
+function TypingIndicator() {
+  return (
+    <motion.div
+      className="flex justify-start"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15 }}
+    >
+      <div className="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3">
+        <motion.div
+          className="flex items-center gap-1.5"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.15 } },
+          }}
+        >
+          {[0, 1, 2].map((i) => (
+            <motion.span
+              key={i}
+              className="block w-2 h-2 rounded-full bg-amber-500"
+              variants={{
+                hidden: { opacity: 0.4, scale: 0.8 },
+                visible: { opacity: 1, scale: 1 },
+              }}
+              animate={{
+                opacity: [0.4, 1, 0.4],
+                scale: [0.8, 1, 0.8],
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                delay: i * 0.15,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function DemoPage() {
   const { config, loaded } = useBusinessConfig();
@@ -218,7 +263,7 @@ export default function DemoPage() {
               <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
               <div className="flex-1 text-sm min-w-0">
                 <div className="font-semibold text-red-900 flex items-center gap-2 flex-wrap">
-                  <span>⚠️ ServeIQ flagged this for your attention</span>
+                  <span>ServeIQ flagged this for your attention</span>
                   <Badge
                     variant="destructive"
                     className="bg-red-600 text-white border-transparent"
@@ -246,23 +291,21 @@ export default function DemoPage() {
         )}
 
         {loaded && !config.businessName && (
-          <Card className="mb-4 border-amber-200 bg-amber-50">
-            <CardContent className="flex items-start gap-3 p-4">
-              <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
-              <div className="flex-1 text-sm">
-                <div className="font-medium text-amber-900">
-                  No business configured yet
-                </div>
-                <p className="text-amber-800/80 text-xs mt-0.5">
-                  The AI will still respond, but it'll be more impressive once you fill in your
-                  services and tone.{" "}
-                  <Link href="/setup" className="font-medium underline">
-                    Open setup
-                  </Link>
-                </p>
+          <div className="mb-4 flex items-start gap-3 rounded-lg border-l-4 border-amber-500 bg-white px-4 py-3 shadow-sm">
+            <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+            <div className="flex-1 text-sm">
+              <div className="font-medium text-gray-900">
+                No business configured yet
               </div>
-            </CardContent>
-          </Card>
+              <p className="text-gray-500 text-xs mt-0.5">
+                The AI will still respond, but it&apos;ll be more impressive once you fill in your
+                services and tone.{" "}
+                <Link href="/setup" className="font-medium text-amber-600 underline">
+                  Open setup
+                </Link>
+              </p>
+            </div>
+          </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -292,7 +335,7 @@ export default function DemoPage() {
               {/* Messages */}
               <div
                 ref={scrollRef}
-                className="h-[55vh] min-h-[360px] sm:h-[460px] overflow-y-auto px-4 sm:px-5 py-6 space-y-3 bg-gradient-to-b from-white to-gray-50/50"
+                className="h-[55vh] min-h-[360px] sm:h-[460px] overflow-y-auto px-4 sm:px-5 py-6 space-y-3 bg-white"
               >
                 {messages.length === 0 && !loading && (
                   <div className="h-full flex flex-col items-center justify-center text-center px-6">
@@ -303,61 +346,63 @@ export default function DemoPage() {
                       Send a customer message
                     </div>
                     <p className="text-xs text-gray-500 mt-1 max-w-xs">
-                      Pretend you're a customer texting your business. ServeIQ will reply
+                      Pretend you&apos;re a customer texting your business. ServeIQ will reply
                       automatically.
                     </p>
                     <div className="mt-5 space-y-2 w-full max-w-sm">
                       {SUGGESTIONS.map((s) => (
-                        <Button
+                        <ShimmerButton
                           key={s}
-                          variant="outline"
                           onClick={() => sendMessage(s)}
-                          className="w-full justify-start whitespace-normal h-auto py-2 px-3 text-xs text-gray-700 hover:border-amber-300 hover:bg-amber-50/30 hover:text-gray-700"
+                          className="w-full text-left h-auto"
                         >
                           {s}
-                        </Button>
+                        </ShimmerButton>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {messages.map((m, i) => (
-                  <div
-                    key={i}
-                    className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} animate-fade-in`}
-                  >
-                    <div
-                      className={`max-w-[78%] px-3.5 py-2.5 text-sm leading-relaxed shadow-sm whitespace-pre-wrap ${
-                        m.role === "user"
-                          ? "bg-gray-200 text-gray-900 rounded-2xl rounded-br-md"
-                          : "bg-blue-500 text-white rounded-2xl rounded-bl-md"
-                      }`}
+                <AnimatePresence initial={false}>
+                  {messages.map((m, i) => (
+                    <motion.div
+                      key={i}
+                      className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.15 }}
                     >
-                      {m.content}
-                    </div>
-                  </div>
-                ))}
-
-                {streaming && (
-                  <div className="flex justify-start animate-fade-in">
-                    <div className="max-w-[78%] px-3.5 py-2.5 text-sm leading-relaxed shadow-sm whitespace-pre-wrap bg-blue-500 text-white rounded-2xl rounded-bl-md">
-                      {streaming}
-                      <span className="ml-0.5 inline-block w-1.5 h-3.5 bg-white/80 align-middle animate-pulse" />
-                    </div>
-                  </div>
-                )}
-
-                {loading && !streaming && (
-                  <div className="flex justify-start animate-fade-in">
-                    <div className="bg-blue-500 text-white rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-white/80 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                        <span className="w-1.5 h-1.5 bg-white/80 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                        <span className="w-1.5 h-1.5 bg-white/80 rounded-full animate-bounce" />
+                      <div
+                        className={`max-w-[78%] px-3.5 py-2.5 text-sm leading-relaxed shadow-sm whitespace-pre-wrap ${
+                          m.role === "user"
+                            ? "bg-gray-200 text-gray-900 rounded-2xl rounded-br-md"
+                            : "bg-gray-100 text-gray-900 rounded-2xl rounded-bl-md"
+                        }`}
+                      >
+                        {m.content}
                       </div>
-                    </div>
-                  </div>
-                )}
+                    </motion.div>
+                  ))}
+
+                  {streaming && (
+                    <motion.div
+                      key="streaming"
+                      className="flex justify-start"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <div className="max-w-[78%] px-3.5 py-2.5 text-sm leading-relaxed shadow-sm whitespace-pre-wrap bg-gray-100 text-gray-900 rounded-2xl rounded-bl-md">
+                        {streaming}
+                        <span className="ml-0.5 inline-block w-1.5 h-3.5 bg-amber-500/60 align-middle animate-pulse" />
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {loading && !streaming && (
+                    <TypingIndicator key="typing" />
+                  )}
+                </AnimatePresence>
 
                 {error && (
                   <div
@@ -378,31 +423,26 @@ export default function DemoPage() {
                 )}
               </div>
 
-              {/* Composer */}
+              {/* Composer — iMessage style */}
               <form
                 onSubmit={handleSubmit}
                 className="border-t bg-white px-3 py-3 flex items-center gap-2"
               >
-                <Input
+                <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type a customer message…"
-                  className="flex-1 rounded-full bg-gray-50 focus-visible:bg-white"
+                  placeholder="Type a customer message..."
                   disabled={loading}
+                  className="flex-1 h-10 rounded-full bg-gray-100 px-4 text-sm text-gray-900 placeholder:text-gray-400 shadow-inner outline-none focus:ring-2 focus:ring-amber-300/50 focus:bg-white transition-colors disabled:opacity-50"
                 />
-                <Button
+                <button
                   type="submit"
-                  size="icon"
                   disabled={loading || !input.trim()}
-                  className="rounded-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-200 disabled:text-gray-400 shrink-0"
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-amber-500 hover:bg-amber-600 text-white transition-colors disabled:bg-gray-200 disabled:text-gray-400 shrink-0"
                   aria-label="Send"
                 >
-                  {loading ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    <Send />
-                  )}
-                </Button>
+                  <ArrowUp className="w-5 h-5" />
+                </button>
               </form>
             </Card>
           </div>
