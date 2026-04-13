@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import {
   MessageCircle,
@@ -14,20 +14,10 @@ import {
   Zap,
   AlertTriangle,
 } from "lucide-react";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import { AppShell } from "@/components/AppShell";
 import { useBusinessConfig } from "@/lib/useBusinessConfig";
 import {
   averageResponseSeconds,
-  bucketByDay,
   useEvents,
   type DemoEvent,
 } from "@/lib/events";
@@ -198,17 +188,6 @@ export default function DashboardPage() {
     return real ?? FALLBACK_AVG_SECONDS;
   }, [events]);
 
-  const hasRealData = events.length > 0;
-
-  const chartData = useMemo(() => {
-    const buckets = bucketByDay(events, 7);
-    return buckets.map((b) => ({
-      label: b.label,
-      seconds: b.avgSeconds ?? 0,
-      count: b.count,
-    }));
-  }, [events]);
-
   const speedupMultiplier = Math.min(
     67,
     Math.max(1, Math.round((INDUSTRY_AVG_MINUTES * 60) / Math.max(1, avgSeconds)))
@@ -299,8 +278,6 @@ export default function DashboardPage() {
         {/* Response Speed */}
         <SpeedCard
           avgSeconds={avgSeconds}
-          hasRealData={hasRealData}
-          chartData={chartData}
           speedupMultiplier={speedupMultiplier}
           loaded={eventsLoaded}
         />
@@ -424,21 +401,13 @@ export default function DashboardPage() {
 
 function SpeedCard({
   avgSeconds,
-  hasRealData,
-  chartData,
   speedupMultiplier,
   loaded,
 }: {
   avgSeconds: number;
-  hasRealData: boolean;
-  chartData: { label: string; seconds: number; count: number }[];
   speedupMultiplier: number;
   loaded: boolean;
 }) {
-  // recharts ResponsiveContainer measures to 0 during SSR — defer to mount.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
   return (
     <Card className="overflow-hidden">
       <CardHeader className="px-5 py-4 border-b flex flex-row items-start justify-between space-y-0 gap-4">
@@ -447,100 +416,27 @@ function SpeedCard({
             <Zap className="w-4 h-4 text-amber-600" />
             Response Speed
           </CardTitle>
-          <CardDescription className="mt-0.5">
-            {hasRealData
-              ? "Calculated from your live demo conversations."
-              : "Try the live demo to start tracking your real response times."}
-          </CardDescription>
         </div>
         <Badge variant="emerald" className="normal-case tracking-normal shrink-0">
           {speedupMultiplier}× faster
         </Badge>
       </CardHeader>
-      <CardContent className="p-5">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="md:col-span-1 flex flex-col justify-center">
-            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-              Avg response time
-            </div>
-            {loaded ? (
-              <div className="text-5xl font-semibold tracking-tight text-gray-900 mt-2">
-                {formatSeconds(avgSeconds)}
-              </div>
-            ) : (
-              <Skeleton className="h-12 w-32 mt-2" />
-            )}
-            <div className="mt-3 text-xs text-gray-500">
-              <span className="font-medium text-gray-700">Industry average:</span>{" "}
-              {INDUSTRY_AVG_MINUTES} min
-              <span className="mx-1.5 text-gray-300">·</span>
-              <span className="font-medium text-emerald-600">
-                You: {formatSeconds(avgSeconds)}
-              </span>
-            </div>
+      <CardContent className="p-8">
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          Avg response time
+        </div>
+        {loaded ? (
+          <div className="text-5xl font-bold tracking-tight text-gray-900 mt-2">
+            {formatSeconds(avgSeconds)}
           </div>
-
-          <div className="md:col-span-2 h-44 -ml-3 -mr-3 sm:ml-0 sm:mr-0">
-            {!mounted ? (
-              <Skeleton className="h-full w-full mx-3 sm:mx-0" />
-            ) : (
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={chartData}
-                margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="speedGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#D97706" stopOpacity={0.45} />
-                    <stop offset="100%" stopColor="#D97706" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="#e5e7eb"
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="label"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fontSize: 11, fill: "#6b7280" }}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  width={36}
-                  tick={{ fontSize: 11, fill: "#6b7280" }}
-                  tickFormatter={(v) => `${Math.round(v)}s`}
-                />
-                <Tooltip
-                  cursor={{ stroke: "#fde68a", strokeWidth: 1 }}
-                  contentStyle={{
-                    borderRadius: 8,
-                    border: "1px solid #e5e7eb",
-                    fontSize: 12,
-                    padding: "6px 10px",
-                  }}
-                  formatter={(value, _name, item) => {
-                    const count =
-                      (item?.payload as { count?: number } | undefined)?.count ?? 0;
-                    if (count === 0) return ["No data", "Avg"];
-                    const num = typeof value === "number" ? value : Number(value);
-                    return [`${num.toFixed(1)}s`, "Avg response"];
-                  }}
-                  labelFormatter={(label) => label}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="seconds"
-                  stroke="#D97706"
-                  strokeWidth={2}
-                  fill="url(#speedGradient)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-            )}
-          </div>
+        ) : (
+          <Skeleton className="h-12 w-32 mt-2" />
+        )}
+        <div className="mt-3 text-sm text-gray-500">
+          Industry average: {INDUSTRY_AVG_MINUTES} min
+        </div>
+        <div className="mt-1 text-sm font-medium text-emerald-600">
+          {speedupMultiplier}× faster than your competitors
         </div>
       </CardContent>
     </Card>

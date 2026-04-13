@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -10,6 +9,7 @@ import {
   Settings,
   Sparkles,
   Tag,
+  Zap,
 } from "lucide-react";
 
 import {
@@ -38,16 +38,11 @@ export function Sidebar() {
   return (
     <ShadcnSidebar collapsible="offcanvas">
       <SidebarHeader className="border-b border-sidebar-border/60">
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/serveiq-logo.png"
-            alt="ServeIQ"
-            width={140}
-            height={36}
-            priority
-            unoptimized
-            style={{ objectFit: "contain" }}
-          />
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
+            <Zap className="w-5 h-5 text-white" />
+          </div>
+          <span className="font-bold text-lg text-white">Serve<span className="text-amber-400">IQ</span></span>
         </Link>
       </SidebarHeader>
 
