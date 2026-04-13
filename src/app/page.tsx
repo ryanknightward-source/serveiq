@@ -66,7 +66,7 @@ export default function LandingPage() {
           {/* Logo — left */}
           <Link href="/" className="shrink-0">
             <Image
-              src="/serveiq-logo.svg"
+              src="/serveiq-logo.png"
               alt="ServeIQ"
               width={160}
               height={44}
