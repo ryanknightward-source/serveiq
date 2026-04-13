@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
@@ -63,12 +64,15 @@ export default function LandingPage() {
       <header className="relative max-w-6xl mx-auto px-4 sm:px-6 py-5">
         <div className="flex items-center justify-between">
           {/* Logo — left */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <MessageSquare className="w-6 h-6 text-[#1a1a2e]" />
-            <span className="text-xl font-bold">
-              <span className="text-[#1a1a2e]">Serve</span>
-              <span className="text-amber-600">IQ</span>
-            </span>
+          <Link href="/" className="flex items-center shrink-0">
+            <Image
+              src="/serveiq-logo.png"
+              alt="ServeIQ"
+              width={140}
+              height={36}
+              priority
+              style={{ objectFit: "contain" }}
+            />
           </Link>
 
           {/* Nav links — center */}
@@ -116,7 +120,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-16">
           <div className="text-center">
             <FadeIn>
-              <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 leading-[1.1]">
+              <h1 className="text-6xl md:text-7xl font-bold tracking-tight text-gray-900 leading-[1.1]">
                 Your customers text.
                 <br />
                 You&apos;re on a job.
