@@ -332,7 +332,7 @@ export default function LandingPage() {
               href="mailto:ryanknightward@gmail.com"
               className="text-amber-600 hover:text-amber-700 font-medium"
             >
-              hello@getserveiq.net
+              ryanknightward@gmail.com
             </a>
           </p>
         </div>
