@@ -209,9 +209,9 @@ export default function DashboardPage() {
     }));
   }, [events]);
 
-  const speedupMultiplier = Math.max(
-    1,
-    Math.round((INDUSTRY_AVG_MINUTES * 60) / Math.max(1, avgSeconds))
+  const speedupMultiplier = Math.min(
+    67,
+    Math.max(1, Math.round((INDUSTRY_AVG_MINUTES * 60) / Math.max(1, avgSeconds)))
   );
 
   return (
@@ -222,9 +222,11 @@ export default function DashboardPage() {
           <div className="min-w-0">
             {loaded ? (
               <h2 className="text-2xl font-semibold tracking-tight text-gray-900">
-                {config.ownerName
-                  ? `Welcome back, ${config.ownerName.split(" ")[0]}`
-                  : "Welcome to ServeIQ"}
+                {config.businessName
+                  ? `Welcome back, ${config.businessName}`
+                  : config.ownerName
+                    ? `Welcome back, ${config.ownerName.split(" ")[0]}`
+                    : "Welcome back"}
               </h2>
             ) : (
               <Skeleton className="h-8 w-64" />
@@ -242,22 +244,22 @@ export default function DashboardPage() {
         </div>
 
         {!isConfigured && loaded && (
-          <Card className="mb-6 border-amber-200 bg-amber-50">
+          <Card className="mb-6 border-blue-200 bg-[#EFF6FF] border-l-4 border-l-blue-500">
             <CardContent className="flex items-start gap-3 p-4">
-              <div className="w-9 h-9 rounded-md bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-md bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
                 <Bot className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <div className="text-sm font-medium text-amber-900">
+                <div className="text-sm font-medium text-blue-900">
                   Finish setting up your business
                 </div>
-                <p className="text-xs text-amber-800/80 mt-0.5">
+                <p className="text-xs text-blue-800/80 mt-0.5">
                   Add your business name, services, and tone so the AI can reply in your voice.
                 </p>
               </div>
               <Link
                 href="/setup"
-                className="text-xs font-medium text-amber-900 hover:text-amber-700 inline-flex items-center gap-1"
+                className="text-xs font-medium text-blue-900 hover:text-blue-700 inline-flex items-center gap-1"
               >
                 Open setup
                 <ArrowUpRight className="w-3.5 h-3.5" />

@@ -38,25 +38,16 @@ export function Sidebar() {
   return (
     <ShadcnSidebar collapsible="offcanvas">
       <SidebarHeader className="border-b border-sidebar-border/60">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-lg overflow-hidden shadow-lg shadow-black/20 shrink-0 flex items-center justify-center">
-            <Image
-              src="/serveiq-logo.png"
-              alt="ServeIQ"
-              width={36}
-              height={36}
-              priority
-              className="h-9 w-auto object-contain"
-            />
-          </div>
-          <div>
-            <div className="font-semibold text-[15px] tracking-tight text-sidebar-foreground">
-              Serve<span className="text-amber-500">IQ</span>
-            </div>
-            <div className="text-[11px] text-sidebar-foreground/40 -mt-0.5">
-              AI lead response
-            </div>
-          </div>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/serveiq-logo.png"
+            alt="ServeIQ"
+            width={140}
+            height={36}
+            priority
+            unoptimized
+            style={{ objectFit: "contain" }}
+          />
         </Link>
       </SidebarHeader>
 
@@ -96,9 +87,6 @@ export function Sidebar() {
           <Sparkles className="w-4 h-4" />
           Try the demo
         </Link>
-        <div className="px-3 text-[11px] text-sidebar-foreground/30">
-          v0.1 · Preview
-        </div>
       </SidebarFooter>
     </ShadcnSidebar>
   );
