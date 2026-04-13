@@ -36,12 +36,12 @@ const TIERS: Tier[] = [
     key: "starter",
     name: "Starter",
     price: 99,
-    tagline: "Everything you need to stop missing leads.",
+    tagline: "Everything you need to respond to new leads automatically.",
     icon: Zap,
     features: [
       "AI lead response (SMS & email)",
       "Automatic review requests",
-      "Up to 50 leads per month",
+      "Unlimited leads",
       "Business voice training",
       "Standard support",
     ],
@@ -51,7 +51,7 @@ const TIERS: Tier[] = [
     key: "pro",
     name: "Pro",
     price: 199,
-    tagline: "For growing crews that can't afford a cold pipeline.",
+    tagline: "Adds follow-ups, re-engagement, and voice training for businesses serious about closing every lead.",
     icon: Sparkles,
     popular: true,
     features: [
@@ -68,7 +68,7 @@ const TIERS: Tier[] = [
     key: "growth",
     name: "Growth",
     price: 349,
-    tagline: "Purpose-built for multi-location service companies.",
+    tagline: "Multi-location support, escalation alerts, and dedicated onboarding for established operations.",
     icon: Crown,
     features: [
       "Everything in Pro",

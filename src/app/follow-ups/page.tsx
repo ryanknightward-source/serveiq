@@ -169,7 +169,7 @@ export default function FollowUpsPage() {
           <CardHeader className="px-5 py-4 border-b">
             <CardTitle className="inline-flex items-center gap-2">
               <MessageSquare className="w-4 h-4 text-amber-600" />
-              Upcoming & recent follow-ups
+              Follow-up queue
             </CardTitle>
             <CardDescription>
               {FOLLOW_UPS.length} follow-ups across your active customers.

@@ -211,7 +211,7 @@ export default function DashboardPage() {
               <Skeleton className="h-8 w-64" />
             )}
             <p className="text-gray-500 mt-1.5 text-sm">
-              Your AI assistant is responding to leads around the clock.
+              Your AI is active and ready to respond.
             </p>
           </div>
           <Button asChild className="self-start sm:self-auto">
@@ -421,18 +421,18 @@ function SpeedCard({
           {speedupMultiplier}× faster
         </Badge>
       </CardHeader>
-      <CardContent className="p-8">
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-          Avg response time
+      <CardContent className="p-10 text-center">
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-widest">
+          Response Speed
         </div>
         {loaded ? (
-          <div className="text-5xl font-bold tracking-tight text-gray-900 mt-2">
+          <div className="text-6xl font-bold tracking-tight text-gray-900 mt-3">
             {formatSeconds(avgSeconds)}
           </div>
         ) : (
-          <Skeleton className="h-12 w-32 mt-2" />
+          <Skeleton className="h-16 w-40 mt-3 mx-auto" />
         )}
-        <div className="mt-3 text-sm text-gray-500">
+        <div className="mt-4 text-sm text-gray-500">
           Industry average: {INDUSTRY_AVG_MINUTES} min
         </div>
         <div className="mt-1 text-sm font-medium text-emerald-600">
