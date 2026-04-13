@@ -61,44 +61,51 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Nav */}
-      <header className="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between gap-3">
-        <Link href="/" className="flex items-center gap-2 min-w-0">
-          <Image
-            src="/serveiq-logo.png"
-            alt="ServeIQ"
-            width={160}
-            height={40}
-            priority
-            className="h-10 w-auto"
-          />
-        </Link>
-        <nav className="flex items-center gap-1 sm:gap-2">
-          <Link
-            href="/pricing"
-            className="hidden sm:inline-block text-sm text-gray-600 hover:text-gray-900 px-3 py-2"
-          >
-            Pricing
+      <header className="relative max-w-6xl mx-auto px-4 sm:px-6 py-5">
+        <div className="flex items-center justify-between">
+          {/* Logo — left */}
+          <Link href="/" className="flex items-center gap-2 min-w-0 shrink-0">
+            <Image
+              src="/serveiq-logo.png"
+              alt="ServeIQ"
+              width={160}
+              height={40}
+              priority
+              className="h-10 w-auto"
+            />
           </Link>
-          <Link
-            href="/setup"
-            className="hidden sm:inline-block text-sm text-gray-600 hover:text-gray-900 px-3 py-2"
-          >
-            Setup
-          </Link>
-          <Link
-            href="/dashboard"
-            className="hidden sm:inline-block text-sm text-gray-600 hover:text-gray-900 px-3 py-2"
-          >
-            Dashboard
-          </Link>
+
+          {/* Nav links — center */}
+          <nav className="hidden sm:flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
+            <Link
+              href="/pricing"
+              className="text-sm text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
+            >
+              Pricing
+            </Link>
+            <Link
+              href="/setup"
+              className="text-sm text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
+            >
+              Setup
+            </Link>
+            <Link
+              href="/dashboard"
+              className="text-sm text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
+            >
+              Dashboard
+            </Link>
+          </nav>
+
+          {/* CTA — right */}
           <Link
             href="/demo"
-            className="inline-flex items-center gap-1.5 text-sm font-medium px-3.5 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-[#1a1a2e] text-white hover:bg-[#2d2d4e] transition-colors shrink-0"
           >
             Try the demo
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
-        </nav>
+        </div>
       </header>
 
       {/* Hero */}
