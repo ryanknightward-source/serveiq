@@ -61,7 +61,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Nav */}
-      <header className="relative max-w-6xl mx-auto px-4 sm:px-6 py-4">
+      <header className="relative max-w-6xl mx-auto px-4 sm:px-6 py-4 border-t-2 border-[#1a1a2e]">
         <div className="flex items-center justify-between">
           {/* Logo — left */}
           <Link href="/" className="shrink-0">
@@ -80,19 +80,19 @@ export default function LandingPage() {
           <nav className="hidden sm:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <Link
               href="/pricing"
-              className="text-base font-medium text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
+              className="text-base font-semibold text-gray-800 hover:text-amber-600 px-3 py-2 transition-colors border-b-2 border-transparent hover:border-amber-500"
             >
               Pricing
             </Link>
             <Link
               href="/setup"
-              className="text-base font-medium text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
+              className="text-base font-semibold text-gray-800 hover:text-amber-600 px-3 py-2 transition-colors border-b-2 border-transparent hover:border-amber-500"
             >
               Setup
             </Link>
             <Link
               href="/dashboard"
-              className="text-base font-medium text-gray-600 hover:text-gray-900 px-3 py-2 transition-colors"
+              className="text-base font-semibold text-gray-800 hover:text-amber-600 px-3 py-2 transition-colors border-b-2 border-transparent hover:border-amber-500"
             >
               Dashboard
             </Link>
@@ -212,7 +212,7 @@ export default function LandingPage() {
               <StatBlock
                 icon={Activity}
                 text="24/7"
-                label="Always on, even at 2 AM"
+                label="Never takes a day off"
               />
             </div>
           </div>
@@ -306,7 +306,7 @@ export default function LandingPage() {
         <FadeIn>
           <div className="text-center max-w-xl mx-auto mb-12">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
-              Built for businesses that run lean
+              What ServeIQ handles for you
             </h2>
           </div>
         </FadeIn>
@@ -316,21 +316,21 @@ export default function LandingPage() {
             <Feature
               icon={MessageSquare}
               title="Instant lead replies"
-              description="The first 5 minutes matter most. ServeIQ answers in under 60 seconds, 24/7."
+              description="A customer texts at 9pm on a Friday. ServeIQ responds in under 30 seconds — while you're still on the job."
             />
           </FadeIn>
           <FadeIn delay={0.1}>
             <Feature
               icon={Zap}
               title="Smart cold-quote follow-ups"
-              description="Automatically re-engages quotes that went cold without sounding pushy."
+              description="Sent a quote that went quiet? ServeIQ follows up automatically so you don't have to chase."
             />
           </FadeIn>
           <FadeIn delay={0.2}>
             <Feature
               icon={Star}
               title="Review requests on autopilot"
-              description="Asks happy customers for a Google review at exactly the right moment."
+              description="After every completed job, ServeIQ texts the customer asking for a Google review at exactly the right moment."
             />
           </FadeIn>
         </div>
@@ -371,14 +371,20 @@ export default function LandingPage() {
         <FadeIn>
           <div className="rounded-2xl bg-[#1a1a2e] px-6 sm:px-12 py-12 text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-              Ready to respond to every lead, around the clock.
+              Never miss another lead.
             </h2>
+            <p className="mt-4 text-base text-gray-400">
+              Free 14-day trial. No credit card required. Cancel anytime.
+            </p>
+            <p className="mt-2 text-sm text-gray-500">
+              Plans start at $99/mo after your trial. No contracts. Cancel anytime.
+            </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/setup"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-900 text-sm font-semibold transition-colors"
               >
-                Start your free trial
+                Start your free trial — it&apos;s free
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
@@ -388,9 +394,6 @@ export default function LandingPage() {
                 View pricing
               </Link>
             </div>
-            <p className="mt-4 text-xs text-gray-500">
-              14-day free trial, no credit card required
-            </p>
           </div>
         </FadeIn>
       </section>
