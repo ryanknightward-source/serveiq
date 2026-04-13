@@ -184,7 +184,7 @@ export default function LandingPage() {
       {/* Stats Bar */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <FadeIn>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-0 sm:divide-x divide-gray-200">
+          <div className="grid grid-cols-3 gap-0">
             <StatBlock
               icon={Timer}
               prefix="< "
