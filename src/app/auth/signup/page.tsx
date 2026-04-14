@@ -43,19 +43,10 @@ export default function SignupPage() {
       return;
     }
 
-    // If signup succeeds and user is confirmed (no email verification required),
-    // create the business row and redirect
+    // The businesses row is created automatically by a Postgres trigger
+    // (handle_new_user) that fires on auth.users insert, using the
+    // business_name from raw_user_meta_data.
     if (data.user) {
-      const { error: insertError } = await supabase.from("businesses").insert({
-        id: data.user.id,
-        business_name: businessName,
-        email: email,
-      });
-
-      if (insertError) {
-        console.error("Failed to create business row:", insertError);
-      }
-
       router.push("/setup");
       router.refresh();
     }
