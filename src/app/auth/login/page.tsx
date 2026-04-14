@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Zap, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase-browser";
@@ -15,7 +15,6 @@ export default function LoginPage() {
 }
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || "/dashboard";
 
@@ -41,8 +40,7 @@ function LoginForm() {
       return;
     }
 
-    router.push(next);
-    router.refresh();
+    window.location.href = next;
   }
 
   return (

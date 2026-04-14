@@ -1,14 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Zap, Loader2, Check } from "lucide-react";
 import { createClient } from "@/lib/supabase-browser";
 
 export default function SignupPage() {
-  const router = useRouter();
-
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,10 +43,11 @@ export default function SignupPage() {
     // The businesses row is created automatically by a Postgres trigger
     // (handle_new_user) that fires on auth.users insert, using the
     // business_name from raw_user_meta_data.
-    if (data.user) {
-      router.push("/setup");
-      router.refresh();
-    }
+
+    // Use window.location for a full page load so the session cookie
+    // is picked up cleanly — router.push can hang if the session
+    // isn't established yet on the client side.
+    window.location.href = "/setup";
   }
 
   return (
