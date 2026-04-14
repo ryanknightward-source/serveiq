@@ -24,6 +24,7 @@ import {
   Tone,
 } from "@/lib/types";
 import { buildVoicePreview } from "@/lib/prompt";
+import { createClient } from "@/lib/supabase-browser";
 import {
   Card,
   CardContent,
@@ -58,14 +59,51 @@ export default function SetupPage() {
   const { config, setConfig, loaded } = useBusinessConfig();
   const [draft, setDraft] = useState<BusinessConfig>(config);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [aiPreview, setAiPreview] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const previewAbortRef = useRef<AbortController | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
+  // Load config: try Supabase first, fall back to localStorage
   useEffect(() => {
-    if (loaded) setDraft(config);
-  }, [loaded, config]);
+    async function loadFromSupabase() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      setUserId(user.id);
+
+      const { data: biz } = await supabase
+        .from("businesses")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (biz) {
+        const fromDb: BusinessConfig = {
+          businessName: biz.business_name || "",
+          ownerName: biz.owner_name || "",
+          phone: biz.phone || "",
+          email: biz.email || "",
+          services: biz.services || [],
+          pricing: biz.pricing_info ? JSON.parse(biz.pricing_info) : {},
+          tone: (biz.tone as Tone) || "Friendly",
+          voiceExamples: biz.voice_examples || "",
+        };
+        setDraft(fromDb);
+        // Also sync to localStorage so other pages can use it
+        setConfig(fromDb);
+      }
+    }
+    loadFromSupabase();
+  }, []);
+
+  // Fall back to localStorage if not logged in
+  useEffect(() => {
+    if (loaded && !userId) setDraft(config);
+  }, [loaded, config, userId]);
 
   useEffect(() => {
     return () => previewAbortRef.current?.abort();
@@ -150,10 +188,39 @@ export default function SetupPage() {
     }));
   }
 
-  function handleSave(goToDashboard = false) {
+  async function handleSave(goToDashboard = false) {
+    setSaving(true);
+    setSaveError(null);
+
+    // Always save to localStorage
     setConfig(draft);
+
+    // Save to Supabase if logged in
+    if (userId) {
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("businesses")
+        .update({
+          business_name: draft.businessName,
+          owner_name: draft.ownerName,
+          phone: draft.phone,
+          email: draft.email,
+          services: draft.services,
+          pricing_info: JSON.stringify(draft.pricing),
+          tone: draft.tone.toLowerCase(),
+          voice_examples: draft.voiceExamples,
+        })
+        .eq("id", userId);
+
+      if (error) {
+        setSaveError("Failed to save to cloud. Your settings are saved locally.");
+        console.error("Supabase save error:", error);
+      }
+    }
+
+    setSaving(false);
     setSaved(true);
-    setTimeout(() => setSaved(false), 2200);
+    setTimeout(() => setSaved(false), 3000);
     if (goToDashboard) {
       setTimeout(() => router.push("/dashboard"), 300);
     }
@@ -377,18 +444,23 @@ export default function SetupPage() {
             </Card>
 
             <div className="flex flex-wrap items-center gap-3">
-              <Button onClick={() => handleSave(false)}>
-                <Save />
+              <Button onClick={() => handleSave(false)} disabled={saving}>
+                {saving ? <Loader2 className="animate-spin" /> : <Save />}
                 Save settings
               </Button>
-              <Button variant="brand" onClick={() => handleSave(true)}>
+              <Button variant="brand" onClick={() => handleSave(true)} disabled={saving}>
                 Save & open dashboard
                 <ArrowRight />
               </Button>
               {saved && (
                 <span className="text-sm text-emerald-600 inline-flex items-center gap-1.5 animate-fade-in">
                   <Check className="w-4 h-4" />
-                  Saved to your browser
+                  Your AI is configured and ready to respond.
+                </span>
+              )}
+              {saveError && (
+                <span className="text-sm text-amber-600 inline-flex items-center gap-1.5 animate-fade-in">
+                  {saveError}
                 </span>
               )}
             </div>
