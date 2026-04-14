@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
@@ -10,7 +10,9 @@ import {
   Sparkles,
   Tag,
   Zap,
+  LogOut,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase-browser";
 
 import {
   Sidebar as ShadcnSidebar,
@@ -34,6 +36,14 @@ const NAV = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/auth/login");
+    router.refresh();
+  }
 
   return (
     <ShadcnSidebar collapsible="offcanvas">
@@ -74,7 +84,7 @@ export function Sidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="space-y-2">
         <Link
           href="/demo"
           className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-medium text-white bg-amber-600 hover:bg-amber-500 transition-colors shadow-lg shadow-black/20"
@@ -82,6 +92,13 @@ export function Sidebar() {
           <Sparkles className="w-4 h-4" />
           Try the demo
         </Link>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-medium text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors w-full"
+        >
+          <LogOut className="w-4 h-4" />
+          Sign out
+        </button>
       </SidebarFooter>
     </ShadcnSidebar>
   );

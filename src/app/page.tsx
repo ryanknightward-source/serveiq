@@ -99,13 +99,21 @@ export default function LandingPage() {
           </nav>
 
           {/* CTA — right */}
-          <Link
-            href="/demo"
-            className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-[#1a1a2e] text-white hover:bg-[#2d2d4e] transition-colors shrink-0"
-          >
-            Try the demo
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+          <div className="flex items-center gap-3 shrink-0">
+            <Link
+              href="/auth/login"
+              className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/auth/signup"
+              className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-[#1a1a2e] text-white hover:bg-[#2d2d4e] transition-colors"
+            >
+              Start free trial
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -140,7 +148,7 @@ export default function LandingPage() {
             <FadeIn delay={0.2}>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link
-                  href="/setup"
+                  href="/auth/signup"
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#1a1a2e] hover:bg-[#2d2d4e] text-white text-sm font-medium shadow-lg shadow-gray-300/50 transition-all hover:shadow-xl hover:shadow-gray-300/60"
                 >
                   Start free trial
@@ -381,7 +389,7 @@ export default function LandingPage() {
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
-                href="/setup"
+                href="/auth/signup"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-900 text-sm font-semibold transition-colors"
               >
                 Start your free trial — it&apos;s free
