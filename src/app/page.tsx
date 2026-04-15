@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import { createClient } from "@/lib/supabase-browser";
 import {
   ArrowRight,
   MessageSquare,
@@ -58,6 +59,15 @@ const MARQUEE_ITEMS = [
 ];
 
 export default function LandingPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setIsLoggedIn(!!user);
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Nav */}
@@ -91,7 +101,7 @@ export default function LandingPage() {
               Demo
             </Link>
             <Link
-              href="/auth/login"
+              href={isLoggedIn ? "/dashboard" : "/auth/login"}
               className="text-base font-semibold text-gray-800 hover:text-amber-600 px-3 py-2 transition-colors border-b-2 border-transparent hover:border-amber-500"
             >
               Dashboard
@@ -100,19 +110,31 @@ export default function LandingPage() {
 
           {/* CTA — right */}
           <div className="flex items-center gap-3 shrink-0">
-            <Link
-              href="/auth/login"
-              className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-[#1a1a2e] text-white hover:bg-[#2d2d4e] transition-colors"
-            >
-              Start free trial
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-[#1a1a2e] text-white hover:bg-[#2d2d4e] transition-colors"
+              >
+                Go to dashboard
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/auth/login"
+                  className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-[#1a1a2e] text-white hover:bg-[#2d2d4e] transition-colors"
+                >
+                  Start free trial
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
