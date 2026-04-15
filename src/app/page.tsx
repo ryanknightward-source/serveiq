@@ -85,13 +85,13 @@ export default function LandingPage() {
               Pricing
             </Link>
             <Link
-              href="/setup"
+              href="/demo"
               className="text-base font-semibold text-gray-800 hover:text-amber-600 px-3 py-2 transition-colors border-b-2 border-transparent hover:border-amber-500"
             >
-              Setup
+              Demo
             </Link>
             <Link
-              href="/dashboard"
+              href="/auth/login"
               className="text-base font-semibold text-gray-800 hover:text-amber-600 px-3 py-2 transition-colors border-b-2 border-transparent hover:border-amber-500"
             >
               Dashboard

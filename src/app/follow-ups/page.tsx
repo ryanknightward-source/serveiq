@@ -142,6 +142,7 @@ export default function FollowUpsPage() {
   const [followUps, setFollowUps] = useState<FollowUp[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchFollowUps() {
@@ -171,6 +172,7 @@ export default function FollowUpsPage() {
 
       if (error) {
         console.error("Failed to fetch follow-ups:", error);
+        setFetchError("Failed to load follow-ups. Please refresh the page.");
         setFollowUps([]);
       } else {
         const mapped = (data ?? []).map((row: any) => ({
@@ -206,6 +208,12 @@ export default function FollowUpsPage() {
             Automatic nudges ServeIQ has queued for cold quotes and lapsed customers.
           </p>
         </div>
+
+        {fetchError && (
+          <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+            {fetchError}
+          </div>
+        )}
 
         {/* Summary stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">

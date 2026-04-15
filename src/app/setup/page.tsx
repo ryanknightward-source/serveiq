@@ -88,7 +88,7 @@ export default function SetupPage() {
           phone: biz.phone || "",
           email: biz.email || "",
           services: biz.services || [],
-          pricing: biz.pricing_info ? JSON.parse(biz.pricing_info) : {},
+          pricing: (() => { try { return biz.pricing_info ? JSON.parse(biz.pricing_info) : {}; } catch { return {}; } })(),
           tone: (biz.tone as Tone) || "Friendly",
           voiceExamples: biz.voice_examples || "",
         };

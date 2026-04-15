@@ -143,6 +143,7 @@ export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchLeads() {
@@ -165,6 +166,7 @@ export default function LeadsPage() {
 
       if (error) {
         console.error("Failed to fetch leads:", error);
+        setFetchError("Failed to load leads. Please refresh the page.");
         setLeads([]);
       } else {
         setLeads((data as Lead[]) ?? []);
@@ -210,6 +212,12 @@ export default function LeadsPage() {
             </p>
           </div>
         </div>
+
+        {fetchError && (
+          <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+            {fetchError}
+          </div>
+        )}
 
         <Card>
           {/* Filter bar */}
