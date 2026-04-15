@@ -238,11 +238,11 @@ export default function DashboardPage() {
   );
 
   const activityFeed = useMemo<ActivityItem[]>(() => {
-    // If logged in and have real leads from Supabase, show those
-    if (userId && recentLeads.length > 0) {
+    // Logged-in users only see real Supabase leads (no mock data)
+    if (userId) {
       return recentLeads.map(dbLeadToActivity).slice(0, 10);
     }
-    // Otherwise mix demo events with mock data
+    // Not logged in — mix demo events with mock data for public demo
     const real = realEvents.map(eventToActivity);
     return [...real, ...MOCK_ACTIVITY].slice(0, 6);
   }, [userId, recentLeads, realEvents]);
@@ -385,12 +385,12 @@ export default function DashboardPage() {
               <div>
                 <CardTitle>Recent activity</CardTitle>
                 <CardDescription className="mt-0.5">
-                  {userId && recentLeads.length > 0
-                    ? `${recentLeads.length} recent lead${recentLeads.length === 1 ? "" : "s"} from your customers.`
+                  {userId
+                    ? "Your real customer messages and AI replies."
                     : realEvents.length > 0
                     ? `${realEvents.length} live demo ${
                         realEvents.length === 1 ? "reply" : "replies"
-                      } + recent customer messages.`
+                      } + sample customer messages.`
                     : "The last messages your AI sent on your behalf."}
                 </CardDescription>
               </div>
@@ -402,8 +402,14 @@ export default function DashboardPage() {
                   <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
                 </div>
               ) : activityFeed.length === 0 ? (
-                <div className="text-center py-12 text-sm text-gray-500">
-                  No activity yet. Once customers text your number, their conversations will appear here.
+                <div className="text-center py-12">
+                  <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+                    <MessageCircle className="w-6 h-6" />
+                  </div>
+                  <p className="mt-4 text-sm font-medium text-gray-900">No activity yet</p>
+                  <p className="mt-1 text-xs text-gray-500 max-w-xs mx-auto">
+                    Once customers text your number, their messages and AI replies will appear here.
+                  </p>
                 </div>
               ) : (
                 <ul className="divide-y divide-gray-100">
