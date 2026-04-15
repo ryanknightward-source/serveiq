@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   MessageCircle,
@@ -13,6 +13,7 @@ import {
   Sparkles,
   Zap,
   AlertTriangle,
+  Loader2,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useBusinessConfig } from "@/lib/useBusinessConfig";
@@ -21,6 +22,7 @@ import {
   useEvents,
   type DemoEvent,
 } from "@/lib/events";
+import { createClient } from "@/lib/supabase-browser";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -32,30 +34,6 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const STATS = [
-  {
-    label: "Leads Responded",
-    value: "47",
-    delta: "+12 this week",
-    icon: MessageCircle,
-    accent: "from-[#1a1a2e] to-[#2d2d4e]",
-  },
-  {
-    label: "Follow-Ups Sent",
-    value: "23",
-    delta: "+8 this week",
-    icon: RotateCcw,
-    accent: "from-amber-500 to-amber-600",
-  },
-  {
-    label: "Reviews Requested",
-    value: "15",
-    delta: "+5 this week",
-    icon: Star,
-    accent: "from-amber-500 to-orange-500",
-  },
-];
 
 type ActivityType = "Lead" | "Follow-Up" | "Review";
 
@@ -163,10 +141,96 @@ function eventToActivity(evt: DemoEvent): ActivityItem {
   };
 }
 
+interface DbLead {
+  id: string;
+  customer_phone: string;
+  customer_name: string | null;
+  message: string;
+  ai_response: string | null;
+  channel: string;
+  status: string;
+  is_escalated: boolean;
+  created_at: string;
+}
+
+function dbLeadToActivity(lead: DbLead): ActivityItem {
+  const name = lead.customer_name || lead.customer_phone || "Unknown";
+  return {
+    id: lead.id,
+    channel: (lead.channel?.toUpperCase() === "EMAIL" ? "Email" : "SMS") as "SMS" | "Email",
+    type: "Lead",
+    customer: name,
+    preview: lead.ai_response || lead.message || "",
+    time: formatRelativeTime(new Date(lead.created_at).getTime()),
+    escalated: lead.is_escalated,
+  };
+}
+
 export default function DashboardPage() {
   const { config, loaded } = useBusinessConfig();
   const isConfigured = loaded && config.businessName.length > 0;
   const { events, loaded: eventsLoaded } = useEvents();
+
+  // Supabase state
+  const [dbLoading, setDbLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [businessName, setBusinessName] = useState<string | null>(null);
+  const [leadsResponded, setLeadsResponded] = useState(0);
+  const [followUpsSent, setFollowUpsSent] = useState(0);
+  const [reviewsRequested, setReviewsRequested] = useState(0);
+  const [recentLeads, setRecentLeads] = useState<DbLead[]>([]);
+
+  useEffect(() => {
+    async function fetchDashboardData() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setDbLoading(false);
+        return;
+      }
+      setUserId(user.id);
+
+      // Fetch business name
+      const { data: biz } = await supabase
+        .from("businesses")
+        .select("business_name")
+        .eq("id", user.id)
+        .single();
+      if (biz?.business_name) setBusinessName(biz.business_name);
+
+      // Fetch counts
+      const [leadsRes, followUpsRes, reviewsRes, recentRes] = await Promise.all([
+        supabase
+          .from("leads")
+          .select("id", { count: "exact", head: true })
+          .eq("business_id", user.id)
+          .eq("status", "responded"),
+        supabase
+          .from("follow_ups")
+          .select("id", { count: "exact", head: true })
+          .eq("business_id", user.id)
+          .eq("status", "sent"),
+        supabase
+          .from("leads")
+          .select("id", { count: "exact", head: true })
+          .eq("business_id", user.id)
+          .eq("status", "review_requested"),
+        supabase
+          .from("leads")
+          .select("*")
+          .eq("business_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(10),
+      ]);
+
+      setLeadsResponded(leadsRes.count ?? 0);
+      setFollowUpsSent(followUpsRes.count ?? 0);
+      setReviewsRequested(reviewsRes.count ?? 0);
+      setRecentLeads((recentRes.data as DbLead[]) ?? []);
+      setDbLoading(false);
+    }
+    fetchDashboardData();
+  }, []);
 
   const realEvents = useMemo(
     () => [...events].sort((a, b) => b.timestamp - a.timestamp),
@@ -174,9 +238,14 @@ export default function DashboardPage() {
   );
 
   const activityFeed = useMemo<ActivityItem[]>(() => {
+    // If logged in and have real leads from Supabase, show those
+    if (userId && recentLeads.length > 0) {
+      return recentLeads.map(dbLeadToActivity).slice(0, 10);
+    }
+    // Otherwise mix demo events with mock data
     const real = realEvents.map(eventToActivity);
     return [...real, ...MOCK_ACTIVITY].slice(0, 6);
-  }, [realEvents]);
+  }, [userId, recentLeads, realEvents]);
 
   const escalatedEvents = useMemo(
     () => realEvents.filter((e) => e.escalated),
@@ -193,19 +262,40 @@ export default function DashboardPage() {
     Math.max(1, Math.round((INDUSTRY_AVG_MINUTES * 60) / Math.max(1, avgSeconds)))
   );
 
+  const stats = [
+    {
+      label: "Leads Responded",
+      value: userId ? leadsResponded : 47,
+      icon: MessageCircle,
+      accent: "from-[#1a1a2e] to-[#2d2d4e]",
+    },
+    {
+      label: "Follow-Ups Sent",
+      value: userId ? followUpsSent : 23,
+      icon: RotateCcw,
+      accent: "from-amber-500 to-amber-600",
+    },
+    {
+      label: "Reviews Requested",
+      value: userId ? reviewsRequested : 15,
+      icon: Star,
+      accent: "from-amber-500 to-orange-500",
+    },
+  ];
+
+  const displayName = businessName || config.businessName || config.ownerName?.split(" ")[0] || "";
+
   return (
     <AppShell title="Dashboard">
       <div className="max-w-6xl mx-auto">
         {/* Welcome */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div className="min-w-0">
-            {loaded ? (
+            {loaded || !dbLoading ? (
               <h2 className="text-2xl font-semibold tracking-tight text-gray-900">
-                {config.businessName
-                  ? `Welcome back, ${config.businessName}`
-                  : config.ownerName
-                    ? `Welcome back, ${config.ownerName.split(" ")[0]}`
-                    : "Welcome back"}
+                {displayName
+                  ? `Welcome back, ${displayName}`
+                  : "Welcome back"}
               </h2>
             ) : (
               <Skeleton className="h-8 w-64" />
@@ -249,7 +339,7 @@ export default function DashboardPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          {STATS.map(({ label, value, delta, icon: Icon, accent }) => (
+          {stats.map(({ label, value, icon: Icon, accent }) => (
             <Card key={label} className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
@@ -257,12 +347,13 @@ export default function DashboardPage() {
                     <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                       {label}
                     </div>
-                    <div className="text-3xl font-semibold text-gray-900 mt-2 tracking-tight">
-                      {value}
-                    </div>
-                    <div className="text-xs text-emerald-600 mt-1.5 font-medium">
-                      {delta}
-                    </div>
+                    {dbLoading && userId ? (
+                      <Skeleton className="h-9 w-16 mt-2" />
+                    ) : (
+                      <div className="text-3xl font-semibold text-gray-900 mt-2 tracking-tight">
+                        {value}
+                      </div>
+                    )}
                   </div>
                   <div
                     className={`w-10 h-10 rounded-lg bg-gradient-to-br ${accent} flex items-center justify-center text-white shadow-md`}
@@ -294,7 +385,9 @@ export default function DashboardPage() {
               <div>
                 <CardTitle>Recent activity</CardTitle>
                 <CardDescription className="mt-0.5">
-                  {realEvents.length > 0
+                  {userId && recentLeads.length > 0
+                    ? `${recentLeads.length} recent lead${recentLeads.length === 1 ? "" : "s"} from your customers.`
+                    : realEvents.length > 0
                     ? `${realEvents.length} live demo ${
                         realEvents.length === 1 ? "reply" : "replies"
                       } + recent customer messages.`
@@ -304,66 +397,76 @@ export default function DashboardPage() {
               <span className="text-xs text-gray-400">Live</span>
             </CardHeader>
             <CardContent className="p-0">
-              <ul className="divide-y divide-gray-100">
-                {activityFeed.map((a) => (
-                  <li
-                    key={a.id}
-                    className={`px-5 py-4 hover:bg-gray-50/60 transition-colors ${
-                      a.escalated ? "bg-red-50/40 border-l-2 border-l-red-500" : ""
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={`w-9 h-9 rounded-full text-white text-xs font-semibold flex items-center justify-center shrink-0 ${
-                          a.escalated
-                            ? "bg-gradient-to-br from-red-500 to-red-600"
-                            : "bg-gradient-to-br from-[#1a1a2e] to-[#2d2d4e]"
-                        }`}
-                      >
-                        {a.customer
-                          .split(" ")
-                          .map((p) => p[0])
-                          .join("")
-                          .slice(0, 2)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-medium text-gray-900">
-                            {a.customer}
-                          </span>
-                          {a.escalated ? (
-                            <Badge
-                              variant="destructive"
-                              className="bg-red-600 text-white border-transparent gap-1"
-                            >
-                              <AlertTriangle className="w-2.5 h-2.5" />
-                              URGENT
-                            </Badge>
-                          ) : (
-                            <Badge variant={ACTIVITY_BADGE_VARIANT[a.type]}>
-                              {a.type}
-                            </Badge>
-                          )}
-                          <span className="inline-flex items-center gap-1 text-[11px] text-gray-500">
-                            {a.channel === "SMS" ? (
-                              <Phone className="w-3 h-3" />
-                            ) : (
-                              <Mail className="w-3 h-3" />
-                            )}
-                            {a.channel}
-                          </span>
+              {dbLoading && userId ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                </div>
+              ) : activityFeed.length === 0 ? (
+                <div className="text-center py-12 text-sm text-gray-500">
+                  No activity yet. Once customers text your number, their conversations will appear here.
+                </div>
+              ) : (
+                <ul className="divide-y divide-gray-100">
+                  {activityFeed.map((a) => (
+                    <li
+                      key={a.id}
+                      className={`px-5 py-4 hover:bg-gray-50/60 transition-colors ${
+                        a.escalated ? "bg-red-50/40 border-l-2 border-l-red-500" : ""
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={`w-9 h-9 rounded-full text-white text-xs font-semibold flex items-center justify-center shrink-0 ${
+                            a.escalated
+                              ? "bg-gradient-to-br from-red-500 to-red-600"
+                              : "bg-gradient-to-br from-[#1a1a2e] to-[#2d2d4e]"
+                          }`}
+                        >
+                          {a.customer
+                            .split(" ")
+                            .map((p) => p[0])
+                            .join("")
+                            .slice(0, 2)}
                         </div>
-                        <p className="text-sm text-gray-600 mt-1 leading-relaxed line-clamp-2">
-                          {a.preview}
-                        </p>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-medium text-gray-900">
+                              {a.customer}
+                            </span>
+                            {a.escalated ? (
+                              <Badge
+                                variant="destructive"
+                                className="bg-red-600 text-white border-transparent gap-1"
+                              >
+                                <AlertTriangle className="w-2.5 h-2.5" />
+                                URGENT
+                              </Badge>
+                            ) : (
+                              <Badge variant={ACTIVITY_BADGE_VARIANT[a.type]}>
+                                {a.type}
+                              </Badge>
+                            )}
+                            <span className="inline-flex items-center gap-1 text-[11px] text-gray-500">
+                              {a.channel === "SMS" ? (
+                                <Phone className="w-3 h-3" />
+                              ) : (
+                                <Mail className="w-3 h-3" />
+                              )}
+                              {a.channel}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 mt-1 leading-relaxed line-clamp-2">
+                            {a.preview}
+                          </p>
+                        </div>
+                        <span className="text-[11px] text-gray-400 shrink-0">
+                          {a.time}
+                        </span>
                       </div>
-                      <span className="text-[11px] text-gray-400 shrink-0">
-                        {a.time}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </CardContent>
           </Card>
 

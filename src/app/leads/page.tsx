@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Mail, Phone, Search, Users } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Loader2, Mail, Phone, Search, Users } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { createClient } from "@/lib/supabase-browser";
 import {
   Card,
   CardContent,
@@ -21,84 +22,71 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
-type LeadStatus = "New" | "Responded" | "Followed Up";
-type LeadChannel = "SMS" | "Email";
+type LeadStatus = "new" | "responded" | "followed_up" | "review_requested";
+type LeadChannel = "sms" | "email";
 
 interface Lead {
   id: string;
-  name: string;
+  customer_name: string | null;
+  customer_phone: string | null;
+  customer_email: string | null;
   message: string;
+  ai_response: string | null;
   channel: LeadChannel;
   status: LeadStatus;
-  // Minutes ago since the lead came in (for deterministic mock data).
-  minutesAgo: number;
+  is_escalated: boolean;
+  created_at: string;
 }
 
-// Deterministic mock data — not randomized so server and client render the same.
-const LEADS: Lead[] = [
+// Mock data for non-logged-in users
+const MOCK_LEADS: Lead[] = [
   {
     id: "l-001",
-    name: "Sarah Mitchell",
+    customer_name: "Sarah Mitchell",
+    customer_phone: "+15551234567",
+    customer_email: null,
     message: "Hey, got a wasp nest under my eaves — can someone come look today?",
-    channel: "SMS",
-    status: "Responded",
-    minutesAgo: 4,
+    ai_response: "Hey Sarah! Thanks for reaching out — happy to take a look at the wasp nest.",
+    channel: "sms",
+    status: "responded",
+    is_escalated: false,
+    created_at: new Date(Date.now() - 4 * 60_000).toISOString(),
   },
   {
     id: "l-002",
-    name: "James Rodriguez",
+    customer_name: "James Rodriguez",
+    customer_phone: "+15559876543",
+    customer_email: null,
     message: "My pool is turning green and I have a birthday party Saturday. Help!",
-    channel: "SMS",
-    status: "New",
-    minutesAgo: 12,
+    ai_response: null,
+    channel: "sms",
+    status: "new",
+    is_escalated: false,
+    created_at: new Date(Date.now() - 12 * 60_000).toISOString(),
   },
   {
     id: "l-003",
-    name: "Emily Chen",
+    customer_name: "Emily Chen",
+    customer_phone: null,
+    customer_email: "emily@example.com",
     message: "Do you guys do quarterly pest control? How much for a 3BR?",
-    channel: "Email",
-    status: "Responded",
-    minutesAgo: 38,
+    ai_response: "Hi Emily! Yes we do — quarterly pest control for a 3BR runs about $89/visit.",
+    channel: "email",
+    status: "responded",
+    is_escalated: false,
+    created_at: new Date(Date.now() - 38 * 60_000).toISOString(),
   },
   {
     id: "l-004",
-    name: "Tom Walker",
+    customer_name: "Tom Walker",
+    customer_phone: "+15555551234",
+    customer_email: null,
     message: "Need a quote on weekly pool cleaning for a 15,000 gallon pool.",
-    channel: "SMS",
-    status: "Followed Up",
-    minutesAgo: 92,
-  },
-  {
-    id: "l-005",
-    name: "Linda Park",
-    message: "Pool pump is making a grinding noise. Is that something you repair?",
-    channel: "Email",
-    status: "New",
-    minutesAgo: 121,
-  },
-  {
-    id: "l-006",
-    name: "Marcus Bailey",
-    message: "Saw roaches in my kitchen last night. What's your next available slot?",
-    channel: "SMS",
-    status: "Responded",
-    minutesAgo: 186,
-  },
-  {
-    id: "l-007",
-    name: "Jessica Nguyen",
-    message: "Hi! Quoted me $220 for tile cleaning 6 weeks ago — still want to book that.",
-    channel: "Email",
-    status: "Followed Up",
-    minutesAgo: 240,
-  },
-  {
-    id: "l-008",
-    name: "David Hoffman",
-    message: "Rodent issue in the garage — traps aren't working. Got any openings this week?",
-    channel: "SMS",
-    status: "New",
-    minutesAgo: 305,
+    ai_response: "Hey Tom! Weekly pool cleaning for 15k gallons runs about $140/mo.",
+    channel: "sms",
+    status: "followed_up",
+    is_escalated: false,
+    created_at: new Date(Date.now() - 92 * 60_000).toISOString(),
   },
 ];
 
@@ -110,50 +98,103 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: "responded", label: "Responded" },
 ];
 
-function formatMinutesAgo(mins: number): string {
+const STATUS_BADGE: Record<
+  string,
+  { variant: "amber" | "emerald" | "slate"; label: string }
+> = {
+  new: { variant: "amber", label: "New" },
+  responded: { variant: "emerald", label: "Responded" },
+  followed_up: { variant: "slate", label: "Followed Up" },
+  review_requested: { variant: "emerald", label: "Review Requested" },
+};
+
+function formatTimeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  if (diff < 60_000) return "just now";
+  const mins = Math.floor(diff / 60_000);
   if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
-  if (hours < 24) {
-    const rem = mins % 60;
-    return rem === 0 ? `${hours}h ago` : `${hours}h ${rem}m ago`;
-  }
+  if (hours < 24) return `${hours}h ago`;
   const days = Math.floor(hours / 24);
   return `${days}d ago`;
 }
 
-const STATUS_BADGE: Record<
-  LeadStatus,
-  { variant: "amber" | "emerald" | "slate"; label: string }
-> = {
-  New: { variant: "amber", label: "New" },
-  Responded: { variant: "emerald", label: "Responded" },
-  "Followed Up": { variant: "slate", label: "Followed Up" },
-};
+function getDisplayName(lead: Lead): string {
+  if (lead.customer_name) return lead.customer_name;
+  if (lead.customer_phone) return lead.customer_phone;
+  if (lead.customer_email) return lead.customer_email;
+  return "Unknown";
+}
+
+function getInitials(name: string): string {
+  // For phone numbers, use first 2 digits after +
+  if (name.startsWith("+")) return name.slice(1, 3);
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
 
 export default function LeadsPage() {
   const [filter, setFilter] = useState<FilterKey>("all");
   const [query, setQuery] = useState("");
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    async function fetchLeads() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        setLeads(MOCK_LEADS);
+        setLoading(false);
+        return;
+      }
+
+      setIsLoggedIn(true);
+
+      const { data, error } = await supabase
+        .from("leads")
+        .select("*")
+        .eq("business_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Failed to fetch leads:", error);
+        setLeads([]);
+      } else {
+        setLeads((data as Lead[]) ?? []);
+      }
+      setLoading(false);
+    }
+    fetchLeads();
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return LEADS.filter((lead) => {
-      if (filter === "new" && lead.status !== "New") return false;
-      if (filter === "responded" && lead.status !== "Responded") return false;
+    return leads.filter((lead) => {
+      if (filter === "new" && lead.status !== "new") return false;
+      if (filter === "responded" && lead.status !== "responded") return false;
       if (!q) return true;
+      const name = getDisplayName(lead).toLowerCase();
       return (
-        lead.name.toLowerCase().includes(q) ||
-        lead.message.toLowerCase().includes(q)
+        name.includes(q) ||
+        lead.message?.toLowerCase().includes(q)
       );
     });
-  }, [filter, query]);
+  }, [filter, query, leads]);
 
   const counts = useMemo(
     () => ({
-      all: LEADS.length,
-      new: LEADS.filter((l) => l.status === "New").length,
-      responded: LEADS.filter((l) => l.status === "Responded").length,
+      all: leads.length,
+      new: leads.filter((l) => l.status === "new").length,
+      responded: leads.filter((l) => l.status === "responded").length,
     }),
-    []
+    [leads]
   );
 
   return (
@@ -220,7 +261,11 @@ export default function LeadsPage() {
           </div>
 
           {/* Table */}
-          {filtered.length > 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+            </div>
+          ) : filtered.length > 0 ? (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -233,20 +278,17 @@ export default function LeadsPage() {
               </TableHeader>
               <TableBody>
                 {filtered.map((lead) => {
-                  const statusMeta = STATUS_BADGE[lead.status];
+                  const name = getDisplayName(lead);
+                  const statusMeta = STATUS_BADGE[lead.status] || STATUS_BADGE["new"];
                   return (
                     <TableRow key={lead.id}>
                       <TableCell>
                         <div className="flex items-center gap-2.5">
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1a1a2e] to-[#2d2d4e] text-white text-[11px] font-semibold flex items-center justify-center shrink-0">
-                            {lead.name
-                              .split(" ")
-                              .map((p) => p[0])
-                              .join("")
-                              .slice(0, 2)}
+                            {getInitials(name)}
                           </div>
                           <span className="font-medium text-sm text-gray-900 whitespace-nowrap">
-                            {lead.name}
+                            {name}
                           </span>
                         </div>
                       </TableCell>
@@ -257,12 +299,12 @@ export default function LeadsPage() {
                       </TableCell>
                       <TableCell>
                         <span className="inline-flex items-center gap-1.5 text-xs text-gray-600">
-                          {lead.channel === "SMS" ? (
+                          {lead.channel === "sms" ? (
                             <Phone className="w-3.5 h-3.5 text-gray-400" />
                           ) : (
                             <Mail className="w-3.5 h-3.5 text-gray-400" />
                           )}
-                          {lead.channel}
+                          {lead.channel.toUpperCase()}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -272,7 +314,7 @@ export default function LeadsPage() {
                       </TableCell>
                       <TableCell className="text-right">
                         <span className="text-xs text-gray-500 whitespace-nowrap">
-                          {formatMinutesAgo(lead.minutesAgo)}
+                          {formatTimeAgo(lead.created_at)}
                         </span>
                       </TableCell>
                     </TableRow>
@@ -280,21 +322,42 @@ export default function LeadsPage() {
                 })}
               </TableBody>
             </Table>
+          ) : isLoggedIn && leads.length === 0 ? (
+            <EmptyStateReal />
           ) : (
-            <EmptyState />
+            <EmptyStateSearch />
           )}
         </Card>
 
-        <p className="mt-4 text-[11px] text-gray-400 text-center">
-          Sample data shown for preview — your real leads will appear here once a phone
-          number is connected.
-        </p>
+        {!isLoggedIn && (
+          <p className="mt-4 text-[11px] text-gray-400 text-center">
+            Sample data shown for preview — your real leads will appear here once a phone
+            number is connected.
+          </p>
+        )}
       </div>
     </AppShell>
   );
 }
 
-function EmptyState() {
+function EmptyStateReal() {
+  return (
+    <Card className="border-0 shadow-none">
+      <CardHeader className="text-center pt-10">
+        <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+          <Users className="w-6 h-6" />
+        </div>
+        <CardTitle className="mt-4 text-[15px]">No leads yet</CardTitle>
+        <CardDescription>
+          Once customers text your number, they will appear here.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="pb-10" />
+    </Card>
+  );
+}
+
+function EmptyStateSearch() {
   return (
     <Card className="border-0 shadow-none">
       <CardHeader className="text-center pt-10">

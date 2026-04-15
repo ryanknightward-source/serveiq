@@ -1,17 +1,19 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Calendar,
   CheckCircle2,
   Clock,
   Eye,
+  Loader2,
   Mail,
   MessageSquare,
   Phone,
   Send,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { createClient } from "@/lib/supabase-browser";
 import {
   Card,
   CardContent,
@@ -21,113 +23,176 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-type FollowUpStatus = "Scheduled" | "Sent" | "Opened";
-type Channel = "SMS" | "Email";
+type FollowUpStatus = "scheduled" | "sent" | "opened";
+type Channel = "sms" | "email";
 
 interface FollowUp {
   id: string;
-  customer: string;
+  lead_id: string | null;
+  message: string;
   channel: Channel;
-  originalInquiry: string;
-  messagePreview: string;
-  // Hours relative to "now" — negative = past, positive = future. Deterministic.
-  hoursOffset: number;
   status: FollowUpStatus;
+  scheduled_for: string | null;
+  sent_at: string | null;
+  opened_at: string | null;
+  created_at: string;
+  // Joined from lead
+  customer_phone?: string;
+  customer_name?: string;
+  original_message?: string;
 }
 
-const FOLLOW_UPS: FollowUp[] = [
+// Mock data for non-logged-in users
+const MOCK_FOLLOW_UPS: FollowUp[] = [
   {
     id: "f-001",
-    customer: "Sarah Mitchell",
-    channel: "SMS",
-    originalInquiry: "Quarterly pest control quote — $89/visit",
-    messagePreview:
-      "Hey Sarah! Just circling back on the pest control quote from last week — still want me to get you on the Tuesday route?",
-    hoursOffset: 2,
-    status: "Scheduled",
+    lead_id: null,
+    message: "Hey Sarah! Just circling back on the pest control quote from last week — still want me to get you on the Tuesday route?",
+    channel: "sms",
+    status: "scheduled",
+    scheduled_for: new Date(Date.now() + 2 * 3_600_000).toISOString(),
+    sent_at: null,
+    opened_at: null,
+    created_at: new Date().toISOString(),
+    customer_name: "Sarah Mitchell",
+    original_message: "Quarterly pest control quote — $89/visit",
   },
   {
     id: "f-002",
-    customer: "James Rodriguez",
-    channel: "SMS",
-    originalInquiry: "Weekly pool cleaning — 15,000 gallons, $140/mo",
-    messagePreview:
-      "Hi James, wanted to follow up on the weekly pool cleaning estimate. We just had a Saturday slot open up if you want it.",
-    hoursOffset: -3,
-    status: "Sent",
+    lead_id: null,
+    message: "Hi James, wanted to follow up on the weekly pool cleaning estimate. We just had a Saturday slot open up if you want it.",
+    channel: "sms",
+    status: "sent",
+    scheduled_for: null,
+    sent_at: new Date(Date.now() - 3 * 3_600_000).toISOString(),
+    opened_at: null,
+    created_at: new Date(Date.now() - 4 * 3_600_000).toISOString(),
+    customer_name: "James Rodriguez",
+    original_message: "Weekly pool cleaning — 15,000 gallons, $140/mo",
   },
   {
     id: "f-003",
-    customer: "Emily Chen",
-    channel: "Email",
-    originalInquiry: "Termite inspection — $175 one-time",
-    messagePreview:
-      "Hi Emily — checking back on the termite inspection. We can usually squeeze these in within 48 hours, just let me know.",
-    hoursOffset: -26,
-    status: "Opened",
+    lead_id: null,
+    message: "Hi Emily — checking back on the termite inspection. We can usually squeeze these in within 48 hours, just let me know.",
+    channel: "email",
+    status: "opened",
+    scheduled_for: null,
+    sent_at: new Date(Date.now() - 26 * 3_600_000).toISOString(),
+    opened_at: new Date(Date.now() - 24 * 3_600_000).toISOString(),
+    created_at: new Date(Date.now() - 28 * 3_600_000).toISOString(),
+    customer_name: "Emily Chen",
+    original_message: "Termite inspection — $175 one-time",
   },
   {
     id: "f-004",
-    customer: "Tom Walker",
-    channel: "SMS",
-    originalInquiry: "Pool heater repair quote — $320",
-    messagePreview:
-      "Hey Tom, still thinking about the heater repair? Happy to answer any questions — it's a 2-3 hour job tops.",
-    hoursOffset: 24,
-    status: "Scheduled",
-  },
-  {
-    id: "f-005",
-    customer: "Linda Park",
-    channel: "Email",
-    originalInquiry: "Monthly pest control renewal",
-    messagePreview:
-      "Hi Linda, your monthly pest service is due to renew next week — want me to keep you on the schedule for your usual Thursday?",
-    hoursOffset: -48,
-    status: "Opened",
-  },
-  {
-    id: "f-006",
-    customer: "Marcus Bailey",
-    channel: "SMS",
-    originalInquiry: "Tile cleaning quote — $220",
-    messagePreview:
-      "Hey Marcus, touching base on the tile cleaning quote. If Friday morning works I can lock it in right now.",
-    hoursOffset: 48,
-    status: "Scheduled",
+    lead_id: null,
+    message: "Hey Tom, still thinking about the heater repair? Happy to answer any questions — it's a 2-3 hour job tops.",
+    channel: "sms",
+    status: "scheduled",
+    scheduled_for: new Date(Date.now() + 24 * 3_600_000).toISOString(),
+    sent_at: null,
+    opened_at: null,
+    created_at: new Date().toISOString(),
+    customer_name: "Tom Walker",
+    original_message: "Pool heater repair quote — $320",
   },
 ];
 
 const STATUS_META: Record<
-  FollowUpStatus,
+  string,
   { badge: "amber" | "slate" | "emerald"; icon: React.ComponentType<{ className?: string }> }
 > = {
-  Scheduled: { badge: "amber", icon: Clock },
-  Sent: { badge: "slate", icon: Send },
-  Opened: { badge: "emerald", icon: Eye },
+  scheduled: { badge: "amber", icon: Clock },
+  sent: { badge: "slate", icon: Send },
+  opened: { badge: "emerald", icon: Eye },
 };
 
-function formatScheduleTime(hoursOffset: number): string {
-  if (hoursOffset === 0) return "now";
-  const abs = Math.abs(hoursOffset);
-  if (hoursOffset > 0) {
-    if (abs < 24) return `in ${abs}h`;
-    const days = Math.round(abs / 24);
+function formatScheduleTime(dateStr: string | null): string {
+  if (!dateStr) return "";
+  const diff = new Date(dateStr).getTime() - Date.now();
+  const abs = Math.abs(diff);
+  const hours = Math.floor(abs / 3_600_000);
+  if (diff > 0) {
+    if (hours < 24) return `in ${hours}h`;
+    const days = Math.round(hours / 24);
     return `in ${days}d`;
   }
-  if (abs < 24) return `${abs}h ago`;
-  const days = Math.round(abs / 24);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.round(hours / 24);
   return `${days}d ago`;
 }
 
+function getDisplayName(f: FollowUp): string {
+  if (f.customer_name) return f.customer_name;
+  if (f.customer_phone) return f.customer_phone;
+  return "Unknown";
+}
+
+function getInitials(name: string): string {
+  if (name.startsWith("+")) return name.slice(1, 3);
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
 export default function FollowUpsPage() {
+  const [followUps, setFollowUps] = useState<FollowUp[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    async function fetchFollowUps() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        setFollowUps(MOCK_FOLLOW_UPS);
+        setLoading(false);
+        return;
+      }
+
+      setIsLoggedIn(true);
+
+      const { data, error } = await supabase
+        .from("follow_ups")
+        .select(`
+          *,
+          leads:lead_id (
+            customer_phone,
+            customer_name,
+            message
+          )
+        `)
+        .eq("business_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Failed to fetch follow-ups:", error);
+        setFollowUps([]);
+      } else {
+        const mapped = (data ?? []).map((row: any) => ({
+          ...row,
+          customer_phone: row.leads?.customer_phone,
+          customer_name: row.leads?.customer_name,
+          original_message: row.leads?.message,
+        }));
+        setFollowUps(mapped);
+      }
+      setLoading(false);
+    }
+    fetchFollowUps();
+  }, []);
+
   const counts = useMemo(
     () => ({
-      scheduled: FOLLOW_UPS.filter((f) => f.status === "Scheduled").length,
-      sent: FOLLOW_UPS.filter((f) => f.status === "Sent").length,
-      opened: FOLLOW_UPS.filter((f) => f.status === "Opened").length,
+      scheduled: followUps.filter((f) => f.status === "scheduled").length,
+      sent: followUps.filter((f) => f.status === "sent").length,
+      opened: followUps.filter((f) => f.status === "opened").length,
     }),
-    []
+    [followUps]
   );
 
   return (
@@ -149,18 +214,21 @@ export default function FollowUpsPage() {
             value={counts.scheduled}
             icon={Clock}
             accent="from-amber-500 to-orange-500"
+            loading={loading}
           />
           <StatCard
             label="Sent"
             value={counts.sent}
             icon={Send}
             accent="from-[#1a1a2e] to-[#2d2d4e]"
+            loading={loading}
           />
           <StatCard
             label="Opened"
             value={counts.opened}
             icon={Eye}
             accent="from-emerald-500 to-emerald-600"
+            loading={loading}
           />
         </div>
 
@@ -172,66 +240,94 @@ export default function FollowUpsPage() {
               Follow-up queue
             </CardTitle>
             <CardDescription>
-              {FOLLOW_UPS.length} follow-ups across your active customers.
+              {loading
+                ? "Loading follow-ups…"
+                : followUps.length > 0
+                ? `${followUps.length} follow-up${followUps.length === 1 ? "" : "s"} across your active customers.`
+                : "No follow-ups yet."}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
-            <ul className="divide-y divide-gray-100">
-              {FOLLOW_UPS.map((f) => {
-                const meta = STATUS_META[f.status];
-                const Icon = meta.icon;
-                return (
-                  <li
-                    key={f.id}
-                    className="px-5 py-4 hover:bg-gray-50/60 transition-colors"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#1a1a2e] to-[#2d2d4e] text-white text-[11px] font-semibold flex items-center justify-center shrink-0">
-                        {f.customer
-                          .split(" ")
-                          .map((p) => p[0])
-                          .join("")
-                          .slice(0, 2)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-medium text-gray-900">
-                            {f.customer}
-                          </span>
-                          <Badge variant={meta.badge} className="gap-1">
-                            <Icon className="w-2.5 h-2.5" />
-                            {f.status}
-                          </Badge>
-                          <span className="inline-flex items-center gap-1 text-[11px] text-gray-500">
-                            {f.channel === "SMS" ? (
-                              <Phone className="w-3 h-3" />
-                            ) : (
-                              <Mail className="w-3 h-3" />
-                            )}
-                            {f.channel}
-                          </span>
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+              </div>
+            ) : followUps.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+                  <MessageSquare className="w-6 h-6" />
+                </div>
+                <p className="mt-4 text-sm font-medium text-gray-900">No follow-ups scheduled yet.</p>
+                <p className="mt-1 text-xs text-gray-500">
+                  {isLoggedIn
+                    ? "Follow-ups will appear here as ServeIQ engages with your leads."
+                    : "Sign up and connect your phone number to get started."}
+                </p>
+              </div>
+            ) : (
+              <ul className="divide-y divide-gray-100">
+                {followUps.map((f) => {
+                  const meta = STATUS_META[f.status] || STATUS_META["scheduled"];
+                  const Icon = meta.icon;
+                  const name = getDisplayName(f);
+                  const timeStr = f.status === "scheduled"
+                    ? formatScheduleTime(f.scheduled_for)
+                    : f.status === "opened"
+                    ? formatScheduleTime(f.opened_at)
+                    : formatScheduleTime(f.sent_at);
+                  return (
+                    <li
+                      key={f.id}
+                      className="px-5 py-4 hover:bg-gray-50/60 transition-colors"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#1a1a2e] to-[#2d2d4e] text-white text-[11px] font-semibold flex items-center justify-center shrink-0">
+                          {getInitials(name)}
                         </div>
-                        <p className="text-[11px] text-gray-500 mt-1 uppercase tracking-wide">
-                          Original inquiry
-                        </p>
-                        <p className="text-xs text-gray-600 -mt-0.5">
-                          {f.originalInquiry}
-                        </p>
-                        <p className="text-sm text-gray-700 mt-2 leading-relaxed line-clamp-2">
-                          &ldquo;{f.messagePreview}&rdquo;
-                        </p>
-                      </div>
-                      <div className="shrink-0 text-right">
-                        <div className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-500">
-                          <Calendar className="w-3 h-3" />
-                          {formatScheduleTime(f.hoursOffset)}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-medium text-gray-900">
+                              {name}
+                            </span>
+                            <Badge variant={meta.badge} className="gap-1">
+                              <Icon className="w-2.5 h-2.5" />
+                              {f.status.charAt(0).toUpperCase() + f.status.slice(1)}
+                            </Badge>
+                            <span className="inline-flex items-center gap-1 text-[11px] text-gray-500">
+                              {f.channel === "sms" ? (
+                                <Phone className="w-3 h-3" />
+                              ) : (
+                                <Mail className="w-3 h-3" />
+                              )}
+                              {f.channel.toUpperCase()}
+                            </span>
+                          </div>
+                          {f.original_message && (
+                            <>
+                              <p className="text-[11px] text-gray-500 mt-1 uppercase tracking-wide">
+                                Original inquiry
+                              </p>
+                              <p className="text-xs text-gray-600 -mt-0.5">
+                                {f.original_message}
+                              </p>
+                            </>
+                          )}
+                          <p className="text-sm text-gray-700 mt-2 leading-relaxed line-clamp-2">
+                            &ldquo;{f.message}&rdquo;
+                          </p>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <div className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-500">
+                            <Calendar className="w-3 h-3" />
+                            {timeStr}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </CardContent>
         </Card>
 
@@ -259,11 +355,13 @@ function StatCard({
   value,
   icon: Icon,
   accent,
+  loading,
 }: {
   label: string;
   value: number;
   icon: React.ComponentType<{ className?: string }>;
   accent: string;
+  loading: boolean;
 }) {
   return (
     <Card>
@@ -272,9 +370,13 @@ function StatCard({
           <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">
             {label}
           </div>
-          <div className="text-3xl font-semibold text-gray-900 mt-2 tracking-tight">
-            {value}
-          </div>
+          {loading ? (
+            <div className="h-9 w-10 mt-2 rounded bg-gray-100 animate-pulse" />
+          ) : (
+            <div className="text-3xl font-semibold text-gray-900 mt-2 tracking-tight">
+              {value}
+            </div>
+          )}
         </div>
         <div
           className={`w-10 h-10 rounded-lg bg-gradient-to-br ${accent} flex items-center justify-center text-white shadow-md`}
