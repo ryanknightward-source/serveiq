@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
@@ -44,6 +45,7 @@ const PRICES = [
     label: "SINGLE SESSION",
     price: "$50",
     note: null,
+    type: "30min-solo",
   },
   {
     duration: "60 MIN",
@@ -51,12 +53,14 @@ const PRICES = [
     price: "$80",
     note: null,
     featured: true,
+    type: "60min-solo",
   },
   {
     duration: "60 MIN",
     label: "2-KID SESSION",
     price: "$120",
     note: "Siblings or teammates",
+    type: "60min-2kids",
   },
 ];
 
@@ -82,7 +86,6 @@ export default function LandingPage() {
 
       {/* ── HERO ─────────────────────────────────────── */}
       <section className="bg-navy-900 relative overflow-hidden">
-        {/* Diagonal accent stripe */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -90,70 +93,90 @@ export default function LandingPage() {
               "linear-gradient(135deg, rgba(26,79,160,0.15) 0%, transparent 50%)",
           }}
         />
-        {/* Thin top-border accent */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-ball-600" />
 
-        <div className="max-w-5xl mx-auto px-5 sm:px-8 pt-16 pb-20 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
-          >
-            {/* Overline */}
-            <p className="font-heading font-semibold text-ball-400 text-sm tracking-[0.2em] uppercase mb-5">
-              Coronado &amp; San Diego, CA
-            </p>
-
-            {/* Main headline */}
-            <h1
-              className="font-heading font-black uppercase leading-none text-white"
-              style={{ fontSize: "clamp(3rem, 10vw, 7.5rem)", letterSpacing: "-0.01em" }}
+        <div className="max-w-5xl mx-auto px-5 sm:px-8 pt-14 pb-16 relative">
+          <div className="flex flex-col md:flex-row md:items-center md:gap-12">
+            {/* Left: text */}
+            <motion.div
+              className="flex-1 min-w-0"
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, ease: "easeOut" }}
             >
-              Private
-              <br />
-              Baseball
-              <br />
-              <span className="text-ball-400">Lessons</span>
-            </h1>
+              <p className="font-heading font-semibold text-ball-400 text-sm tracking-[0.2em] uppercase mb-5">
+                Coronado &amp; San Diego, CA
+              </p>
 
-            {/* Credential line */}
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <span className="font-heading font-700 text-white text-base sm:text-lg tracking-wide uppercase">
-                Former D1 Collegiate Player
-              </span>
-              <span className="hidden sm:block text-navy-600 font-bold">·</span>
-              <span className="text-gray-400 text-sm sm:text-base font-semibold tracking-wide">
-                University of Arkansas
-              </span>
-              <span className="text-navy-600 font-bold">·</span>
-              <span className="text-gray-400 text-sm sm:text-base font-semibold tracking-wide">
-                University of San Diego
-              </span>
-            </div>
-
-            {/* Location */}
-            <div className="mt-3 flex items-center gap-1.5 text-gray-500 text-sm">
-              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-              <span>Local fields in Coronado &amp; San Diego</span>
-            </div>
-
-            {/* CTA */}
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Link
-                href="/book"
-                className="inline-flex items-center gap-2 bg-ball-600 hover:bg-ball-500 text-white font-heading font-700 uppercase tracking-widest text-sm px-8 py-4 transition-colors"
+              <h1
+                className="font-heading font-black uppercase leading-none text-white"
+                style={{ fontSize: "clamp(3rem, 9vw, 6.5rem)", letterSpacing: "-0.01em" }}
               >
-                Book a Lesson
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-              <a
-                href="#pricing"
-                className="text-gray-400 hover:text-white text-sm font-semibold tracking-wide transition-colors"
-              >
-                See pricing ↓
-              </a>
-            </div>
-          </motion.div>
+                Private
+                <br />
+                Baseball
+                <br />
+                <span className="text-ball-400">Lessons</span>
+              </h1>
+
+              <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span className="font-heading font-700 text-white text-sm sm:text-base tracking-wide uppercase">
+                  Former D1 Collegiate Player
+                </span>
+                <span className="text-navy-600 font-bold">·</span>
+                <span className="text-gray-400 text-sm font-semibold tracking-wide">
+                  University of Arkansas
+                </span>
+                <span className="text-navy-600 font-bold">·</span>
+                <span className="text-gray-400 text-sm font-semibold tracking-wide">
+                  University of San Diego
+                </span>
+              </div>
+
+              <div className="mt-3 flex items-center gap-1.5 text-gray-500 text-sm">
+                <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>Local fields in Coronado &amp; San Diego</span>
+              </div>
+
+              <div className="mt-9 flex flex-wrap items-center gap-4">
+                <Link
+                  href="/book"
+                  className="inline-flex items-center gap-2 bg-ball-600 hover:bg-ball-500 text-white font-heading font-700 uppercase tracking-widest text-sm px-8 py-4 transition-colors"
+                >
+                  Book a Lesson
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+                <a
+                  href="#pricing"
+                  className="text-gray-400 hover:text-white text-sm font-semibold tracking-wide transition-colors"
+                >
+                  See pricing ↓
+                </a>
+              </div>
+            </motion.div>
+
+            {/* Right: photo */}
+            <motion.div
+              className="mt-10 md:mt-0 md:w-[380px] lg:w-[440px] flex-shrink-0"
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+            >
+              <div className="relative aspect-[4/5] overflow-hidden">
+                {/* Blue corner accent */}
+                <div className="absolute top-0 left-0 w-8 h-8 bg-ball-600 z-10" />
+                <div className="absolute bottom-0 right-0 w-8 h-8 bg-ball-600 z-10" />
+                <Image
+                  src="/images/lessons/action-1.jpg"
+                  alt="Ryan Ward coaching a young baseball player on the field"
+                  fill
+                  className="object-cover object-top"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 440px"
+                />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -190,9 +213,9 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {PRICES.map((p, i) => (
-              <FadeIn key={p.duration + p.label} delay={i * 0.08}>
+              <FadeIn key={p.type} delay={i * 0.08}>
                 <div
-                  className={`relative border p-8 flex flex-col ${
+                  className={`relative border p-8 flex flex-col h-full ${
                     p.featured
                       ? "border-ball-500 bg-navy-800"
                       : "border-navy-700 bg-navy-800"
@@ -218,7 +241,7 @@ export default function LandingPage() {
                   )}
                   <div className="mt-auto">
                     <Link
-                      href={`/book?type=${i === 0 ? "30min-solo" : i === 1 ? "60min-solo" : "60min-2kids"}`}
+                      href={`/book?type=${p.type}`}
                       className="block text-center bg-ball-600 hover:bg-ball-500 text-white font-heading font-700 uppercase tracking-widest text-xs px-6 py-3 transition-colors"
                     >
                       Book This
@@ -229,6 +252,34 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* ── D1 PHOTO STRIP ───────────────────────────── */}
+      <section className="bg-navy-950 py-0 overflow-hidden">
+        <FadeIn>
+          <div className="grid grid-cols-3 h-52 sm:h-72">
+            {[
+              { src: "/images/lessons/action-5.webp", alt: "Ryan Ward batting in Arkansas uniform", pos: "object-top" },
+              { src: "/images/lessons/action-3.jpg",  alt: "Ryan Ward on field in San Diego uniform at night", pos: "object-center" },
+              { src: "/images/lessons/action-4.jpg",  alt: "Ryan Ward at Arkansas baseball practice", pos: "object-top" },
+            ].map(({ src, alt, pos }) => (
+              <div key={src} className="relative overflow-hidden">
+                <Image
+                  src={src}
+                  alt={alt}
+                  fill
+                  className={`object-cover ${pos} brightness-75`}
+                  sizes="(max-width: 768px) 33vw, 400px"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="bg-navy-950 px-5 py-3 text-center">
+            <p className="font-heading font-700 text-gray-500 text-xs tracking-[0.2em] uppercase">
+              D1 — University of Arkansas &nbsp;·&nbsp; University of San Diego
+            </p>
+          </div>
+        </FadeIn>
       </section>
 
       {/* ── WHAT TO EXPECT ───────────────────────────── */}
@@ -272,8 +323,23 @@ export default function LandingPage() {
       {/* ── ABOUT ────────────────────────────────────── */}
       <section className="bg-navy-900 py-20">
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
-          <div className="max-w-2xl">
-            <FadeIn>
+          <div className="flex flex-col md:flex-row md:gap-14 md:items-start">
+
+            {/* Headshot */}
+            <FadeIn className="mb-10 md:mb-0 md:w-56 lg:w-64 flex-shrink-0">
+              <div className="relative aspect-[3/4] overflow-hidden border-2 border-ball-700">
+                <Image
+                  src="/images/lessons/ryan-ward.jpg"
+                  alt="Ryan Ward — University of San Diego baseball, #9"
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 768px) 50vw, 256px"
+                />
+              </div>
+            </FadeIn>
+
+            {/* Bio */}
+            <FadeIn delay={0.1} className="flex-1">
               <p className="font-heading font-semibold text-ball-400 text-xs tracking-[0.2em] uppercase mb-4">
                 About the Coach
               </p>
