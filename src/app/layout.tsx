@@ -11,7 +11,7 @@ const nunito = Nunito({
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
-  weight: ["600", "700", "800", "900"],
+  weight: ["600", "700"],
   display: "swap",
   variable: "--font-barlow",
 });

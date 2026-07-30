@@ -71,7 +71,7 @@ export default function LandingPage() {
       {/* ── NAV ──────────────────────────────────────── */}
       <header className="bg-navy-900 border-b border-navy-800">
         <div className="max-w-5xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
-          <span className="font-heading font-800 text-white text-lg tracking-wider uppercase">
+          <span className="font-heading font-bold text-white text-lg tracking-wider uppercase">
             Ryan Ward Baseball
           </span>
           <Link
@@ -109,7 +109,7 @@ export default function LandingPage() {
               </p>
 
               <h1
-                className="font-heading font-black uppercase leading-none text-white"
+                className="font-heading font-bold uppercase leading-none text-white"
                 style={{ fontSize: "clamp(3rem, 9vw, 6.5rem)", letterSpacing: "-0.01em" }}
               >
                 Private
@@ -120,7 +120,7 @@ export default function LandingPage() {
               </h1>
 
               <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span className="font-heading font-700 text-white text-sm sm:text-base tracking-wide uppercase">
+                <span className="font-heading font-bold text-white text-sm sm:text-base tracking-wide uppercase">
                   Former D1 Collegiate Player
                 </span>
                 <span className="text-navy-600 font-bold">·</span>
@@ -141,7 +141,7 @@ export default function LandingPage() {
               <div className="mt-9 flex flex-wrap items-center gap-4">
                 <Link
                   href="/book"
-                  className="inline-flex items-center gap-2 bg-ball-600 hover:bg-ball-500 text-white font-heading font-700 uppercase tracking-widest text-sm px-8 py-4 transition-colors"
+                  className="inline-flex items-center gap-2 bg-ball-600 hover:bg-ball-500 text-white font-heading font-bold uppercase tracking-widest text-sm px-8 py-4 transition-colors"
                 >
                   Book a Lesson
                   <ChevronRight className="w-4 h-4" />
@@ -155,7 +155,7 @@ export default function LandingPage() {
               </div>
             </motion.div>
 
-            {/* Right: photo */}
+            {/* Right: photo with corner brackets */}
             <motion.div
               className="mt-10 md:mt-0 md:w-[380px] lg:w-[440px] flex-shrink-0"
               initial={{ opacity: 0, x: 24 }}
@@ -163,9 +163,6 @@ export default function LandingPage() {
               transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
             >
               <div className="relative aspect-[4/5] overflow-hidden">
-                {/* Blue corner accent */}
-                <div className="absolute top-0 left-0 w-8 h-8 bg-ball-600 z-10" />
-                <div className="absolute bottom-0 right-0 w-8 h-8 bg-ball-600 z-10" />
                 <Image
                   src="/images/lessons/action-1.jpg"
                   alt="Ryan Ward coaching a young baseball player on the field"
@@ -187,7 +184,7 @@ export default function LandingPage() {
             {SKILLS.map((s) => (
               <span
                 key={s}
-                className="font-heading font-700 uppercase text-white text-sm tracking-[0.15em]"
+                className="font-heading font-bold uppercase text-white text-sm tracking-[0.15em]"
               >
                 {s}
               </span>
@@ -197,16 +194,16 @@ export default function LandingPage() {
       </div>
 
       {/* ── PRICING ──────────────────────────────────── */}
-      <section id="pricing" className="bg-navy-900 py-20">
+      <section id="pricing" className="bg-navy-900 pt-12 pb-20">
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <FadeIn>
             <h2
-              className="font-heading font-black uppercase text-white text-center mb-2"
+              className="font-heading font-bold uppercase text-white text-center mb-2"
               style={{ fontSize: "clamp(2rem, 6vw, 4rem)", letterSpacing: "-0.01em" }}
             >
               Session Pricing
             </h2>
-            <p className="text-center text-gray-400 text-sm mb-12">
+            <p className="text-center text-gray-400 text-sm mb-10">
               Payment collected at time of booking
             </p>
           </FadeIn>
@@ -224,10 +221,10 @@ export default function LandingPage() {
                   {p.featured && (
                     <div className="absolute top-0 left-0 right-0 h-0.5 bg-ball-500" />
                   )}
-                  <p className="font-heading font-800 text-ball-400 text-xs tracking-[0.2em] uppercase mb-1">
+                  <p className="font-heading font-semibold text-ball-400 text-xs tracking-[0.2em] uppercase mb-1">
                     {p.duration}
                   </p>
-                  <p className="font-heading font-700 text-white text-sm tracking-[0.1em] uppercase mb-6">
+                  <p className="font-heading font-bold text-white text-sm tracking-[0.1em] uppercase mb-6">
                     {p.label}
                   </p>
                   <p
@@ -242,7 +239,7 @@ export default function LandingPage() {
                   <div className="mt-auto">
                     <Link
                       href={`/book?type=${p.type}`}
-                      className="block text-center bg-ball-600 hover:bg-ball-500 text-white font-heading font-700 uppercase tracking-widest text-xs px-6 py-3 transition-colors"
+                      className="block text-center bg-ball-600 hover:bg-ball-500 text-white font-heading font-bold uppercase tracking-widest text-xs px-6 py-3 transition-colors"
                     >
                       Book This
                     </Link>
@@ -255,27 +252,43 @@ export default function LandingPage() {
       </section>
 
       {/* ── D1 PHOTO STRIP ───────────────────────────── */}
-      <section className="bg-navy-950 py-0 overflow-hidden">
+      <section className="bg-navy-950 overflow-hidden">
         <FadeIn>
           <div className="grid grid-cols-3 h-52 sm:h-72">
             {[
-              { src: "/images/lessons/action-5.webp", alt: "Ryan Ward batting in Arkansas uniform", pos: "object-top" },
-              { src: "/images/lessons/action-3.jpg",  alt: "Ryan Ward on field in San Diego uniform at night", pos: "object-center" },
-              { src: "/images/lessons/action-4.jpg",  alt: "Ryan Ward at Arkansas baseball practice", pos: "object-top" },
-            ].map(({ src, alt, pos }) => (
+              {
+                src: "/images/lessons/action-5.webp",
+                alt: "Ryan Ward batting in Arkansas uniform",
+                pos: "object-top",
+                rotate: "",
+              },
+              {
+                // rotated 90° CCW in CSS to fix orientation
+                src: "/images/lessons/action-2.jpg",
+                alt: "Ryan Ward at a major league stadium",
+                pos: "object-center",
+                rotate: "rotate-90 scale-150",
+              },
+              {
+                src: "/images/lessons/action-4.jpg",
+                alt: "Ryan Ward at Arkansas baseball practice",
+                pos: "object-top",
+                rotate: "",
+              },
+            ].map(({ src, alt, pos, rotate }) => (
               <div key={src} className="relative overflow-hidden">
                 <Image
                   src={src}
                   alt={alt}
                   fill
-                  className={`object-cover ${pos} brightness-75`}
+                  className={`object-cover ${pos} brightness-75 ${rotate}`}
                   sizes="(max-width: 768px) 33vw, 400px"
                 />
               </div>
             ))}
           </div>
           <div className="bg-navy-950 px-5 py-3 text-center">
-            <p className="font-heading font-700 text-gray-500 text-xs tracking-[0.2em] uppercase">
+            <p className="font-heading font-semibold text-gray-500 text-xs tracking-[0.2em] uppercase">
               D1 — University of Arkansas &nbsp;·&nbsp; University of San Diego
             </p>
           </div>
@@ -287,7 +300,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <FadeIn>
             <h2
-              className="font-heading font-black uppercase text-navy-900 mb-2"
+              className="font-heading font-bold uppercase text-navy-900 mb-2"
               style={{ fontSize: "clamp(2rem, 6vw, 3.5rem)", letterSpacing: "-0.01em" }}
             >
               What We Work On
@@ -309,7 +322,7 @@ export default function LandingPage() {
             ].map(({ skill, desc }, i) => (
               <FadeIn key={skill} delay={i * 0.06}>
                 <div className="bg-white p-7 h-full">
-                  <p className="font-heading font-800 text-navy-900 text-lg uppercase tracking-wide mb-2">
+                  <p className="font-heading font-bold text-navy-900 text-lg uppercase tracking-wide mb-2">
                     {skill}
                   </p>
                   <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
@@ -324,8 +337,6 @@ export default function LandingPage() {
       <section className="bg-navy-900 py-20">
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="flex flex-col md:flex-row md:gap-14 md:items-start">
-
-            {/* Headshot */}
             <FadeIn className="mb-10 md:mb-0 md:w-56 lg:w-64 flex-shrink-0">
               <div className="relative aspect-[3/4] overflow-hidden border-2 border-ball-700">
                 <Image
@@ -338,13 +349,12 @@ export default function LandingPage() {
               </div>
             </FadeIn>
 
-            {/* Bio */}
             <FadeIn delay={0.1} className="flex-1">
               <p className="font-heading font-semibold text-ball-400 text-xs tracking-[0.2em] uppercase mb-4">
                 About the Coach
               </p>
               <h2
-                className="font-heading font-black uppercase text-white mb-6"
+                className="font-heading font-bold uppercase text-white mb-6"
                 style={{ fontSize: "clamp(2rem, 5vw, 3rem)", letterSpacing: "-0.01em" }}
               >
                 Ryan Ward
@@ -379,7 +389,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-5 sm:px-8 text-center">
           <FadeIn>
             <h2
-              className="font-heading font-black uppercase text-white mb-4"
+              className="font-heading font-bold uppercase text-white mb-4"
               style={{ fontSize: "clamp(2rem, 6vw, 3.5rem)", letterSpacing: "-0.01em" }}
             >
               Ready to Train?
@@ -390,7 +400,7 @@ export default function LandingPage() {
             </p>
             <Link
               href="/book"
-              className="inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-ball-700 font-heading font-800 uppercase tracking-widest text-sm px-10 py-4 transition-colors"
+              className="inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-ball-700 font-heading font-bold uppercase tracking-widest text-sm px-10 py-4 transition-colors"
             >
               Book a Lesson
               <ChevronRight className="w-4 h-4" />
@@ -402,7 +412,7 @@ export default function LandingPage() {
       {/* ── FOOTER ───────────────────────────────────── */}
       <footer className="bg-navy-950 py-8">
         <div className="max-w-5xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="font-heading font-700 text-white text-sm uppercase tracking-widest">
+          <span className="font-heading font-bold text-white text-sm uppercase tracking-widest">
             Ryan Ward Baseball
           </span>
           <a

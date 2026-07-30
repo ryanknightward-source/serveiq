@@ -428,7 +428,7 @@ function BookPageInner() {
               <button
                 onClick={handleSubmit}
                 disabled={!canAdvance() || submitting}
-                className="flex-1 bg-ball-600 hover:bg-ball-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-heading font-700 uppercase tracking-widest text-sm px-8 py-4 transition-colors flex items-center justify-center gap-2"
+                className="flex-1 bg-ball-600 hover:bg-ball-500 disabled:bg-navy-700 disabled:cursor-not-allowed text-white font-heading font-bold uppercase tracking-widest text-sm px-8 py-4 transition-colors flex items-center justify-center gap-2"
               >
                 {submitting ? "Redirecting…" : `Pay ${lessonType.priceDisplay} & Book`}
                 {!submitting && <ChevronRight className="w-4 h-4" />}
