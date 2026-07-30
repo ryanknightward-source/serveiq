@@ -263,11 +263,10 @@ export default function LandingPage() {
                 rotate: "",
               },
               {
-                // rotated 90° CCW in CSS to fix orientation
-                src: "/images/lessons/action-2.jpg",
-                alt: "Ryan Ward at a major league stadium",
+                src: "/images/lessons/action-3.jpg",
+                alt: "Ryan Ward on the field in University of San Diego uniform",
                 pos: "object-center",
-                rotate: "rotate-90 scale-150",
+                rotate: "",
               },
               {
                 src: "/images/lessons/action-4.jpg",
