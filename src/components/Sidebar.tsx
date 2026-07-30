@@ -4,13 +4,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
-  Users,
-  MessageSquare,
+  CalendarCheck,
   Settings,
-  Sparkles,
-  Tag,
-  Zap,
   LogOut,
+  Zap,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase-browser";
 
@@ -28,9 +25,7 @@ import {
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/leads", label: "Leads", icon: Users },
-  { href: "/follow-ups", label: "Follow-Ups", icon: MessageSquare },
-  { href: "/pricing", label: "Pricing", icon: Tag },
+  { href: "/bookings", label: "Bookings", icon: CalendarCheck },
   { href: "/setup", label: "Settings", icon: Settings },
 ];
 
@@ -86,11 +81,12 @@ export function Sidebar() {
 
       <SidebarFooter className="space-y-2">
         <Link
-          href="/demo"
-          className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-medium text-white bg-amber-600 hover:bg-amber-500 transition-colors shadow-lg shadow-black/20"
+          href="/"
+          target="_blank"
+          className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-medium text-white bg-ball-700 hover:bg-ball-600 transition-colors shadow-lg shadow-black/20"
         >
-          <Sparkles className="w-4 h-4" />
-          Try the demo
+          <Zap className="w-4 h-4" />
+          View public site
         </Link>
         <button
           onClick={handleLogout}

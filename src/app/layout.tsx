@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito } from "next/font/google";
+import { Nunito, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -9,31 +9,38 @@ const nunito = Nunito({
   variable: "--font-nunito",
 });
 
-const siteUrl = "https://getserveiq.net";
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["600", "700", "800", "900"],
+  display: "swap",
+  variable: "--font-barlow",
+});
+
+const siteUrl = "https://ryanwardbaseball.com";
 
 export const metadata: Metadata = {
   title: {
-    default: "ServeIQ — AI lead response for service businesses",
-    template: "%s | ServeIQ",
+    default: "Ryan Ward Baseball — Private Lessons in Coronado, CA",
+    template: "%s | Ryan Ward Baseball",
   },
   description:
-    "AI-powered SMS and email automation for pest control and pool service companies. Respond to leads, follow up cold quotes, and re-engage lapsed customers automatically.",
-  applicationName: "ServeIQ",
+    "Private baseball lessons with former D1 collegiate player Ryan Ward (University of Arkansas, University of San Diego). All ages. Hitting, fielding, throwing, footwork. Based in Coronado, CA.",
+  applicationName: "Ryan Ward Baseball",
   formatDetection: { telephone: false },
   metadataBase: new URL(siteUrl),
   openGraph: {
     type: "website",
-    siteName: "ServeIQ",
-    title: "ServeIQ — AI lead response for service businesses",
+    siteName: "Ryan Ward Baseball",
+    title: "Ryan Ward Baseball — Private Lessons in Coronado, CA",
     description:
-      "AI-powered SMS and email automation for pest control and pool service companies. Respond to leads, follow up cold quotes, and re-engage lapsed customers automatically.",
+      "Private baseball lessons with a former D1 collegiate player. All ages welcome. Book online.",
     url: siteUrl,
   },
   twitter: {
     card: "summary",
-    title: "ServeIQ — AI lead response for service businesses",
+    title: "Ryan Ward Baseball — Private Lessons in Coronado, CA",
     description:
-      "AI-powered SMS and email automation for pest control and pool service companies.",
+      "Private baseball lessons with former D1 player Ryan Ward. Coronado, CA. All ages.",
   },
   robots: { index: true, follow: true },
 };
@@ -41,7 +48,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#1a1a2e",
+  themeColor: "#0a1628",
 };
 
 export default function RootLayout({
@@ -50,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={nunito.variable}>
+    <html lang="en" className={`${nunito.variable} ${barlowCondensed.variable}`}>
       <body>{children}</body>
     </html>
   );

@@ -53,6 +53,22 @@ const config: Config = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Baseball palette
+        navy: {
+          950: "#060d18",
+          900: "#0a1628",
+          800: "#0d1e38",
+          700: "#0f2549",
+          600: "#153060",
+        },
+        ball: {
+          700: "#1a4fa0",
+          600: "#1d5bbd",
+          500: "#2563eb",
+          400: "#3b82f6",
+          100: "#dbeafe",
+          50:  "#eff6ff",
+        },
         brand: {
           50: "#fffbeb",
           100: "#fef3c7",
@@ -73,6 +89,12 @@ const config: Config = {
           "BlinkMacSystemFont",
           "Segoe UI",
           "Roboto",
+          "sans-serif",
+        ],
+        heading: [
+          "var(--font-barlow)",
+          "var(--font-nunito)",
+          "-apple-system",
           "sans-serif",
         ],
       },
