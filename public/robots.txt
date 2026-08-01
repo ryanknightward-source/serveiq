@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://getserveiq.net/sitemap.xml
+Sitemap: https://ryanwardbaseball.com/sitemap.xml

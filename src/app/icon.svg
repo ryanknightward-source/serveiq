@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Navy background -->
+  <rect width="32" height="32" rx="4" fill="#0a1628"/>
+  <!-- Blue top accent bar (mirrors the hero section's top stripe) -->
+  <rect x="0" y="0" width="32" height="3" rx="0" fill="#2563eb"/>
+  <!-- RW initials -->
+  <text
+    x="16"
+    y="24"
+    font-family="'Arial Black', Arial, sans-serif"
+    font-size="14"
+    font-weight="900"
+    fill="white"
+    text-anchor="middle"
+    letter-spacing="-0.5"
+  >RW</text>
+</svg>
