@@ -32,12 +32,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { LESSON_TYPES, type LessonTypeId, type BookingFormData } from "@/lib/types";
 
-const supabase = createClient(
-  "https://cmeydojjiomkhswilcku.supabase.co",
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const SUPABASE_URL = "https://cmeydojjiomkhswilcku.supabase.co";
 
 export async function POST(request: NextRequest) {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error("SUPABASE_SERVICE_ROLE_KEY is not set");
+    return NextResponse.json(
+      { error: "Booking service is not configured. Contact the site owner." },
+      { status: 503 }
+    );
+  }
+
+  const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
   let body: BookingFormData;
   try {
     body = await request.json();
@@ -131,12 +137,15 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error) {
-    console.error("Booking insert error:", error);
-    // If table doesn't exist yet, return a placeholder so Stripe still works
+    console.error("Booking insert error — code:", error.code, "message:", error.message, "details:", error.details, "hint:", error.hint);
+    // Table doesn't exist yet — return a placeholder so Stripe still works in dev
     if (error.code === "42P01") {
       return NextResponse.json({ id: "local-" + Date.now() });
     }
-    return NextResponse.json({ error: "Failed to save booking" }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to save booking (${error.code}: ${error.message})` },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ id: data.id });
