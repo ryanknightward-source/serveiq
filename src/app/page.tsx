@@ -71,12 +71,15 @@ export default function LandingPage() {
       {/* ── NAV ──────────────────────────────────────── */}
       <header className="bg-navy-900 border-b border-navy-800">
         <div className="max-w-5xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
-          <span className="font-heading font-bold text-white text-lg tracking-wider uppercase">
+          <Link
+            href="/"
+            className="font-heading font-bold text-white text-lg tracking-wider uppercase hover:text-gray-200 transition-colors"
+          >
             Ryan Ward Baseball
-          </span>
+          </Link>
           <Link
             href="/book"
-            className="inline-flex items-center gap-1.5 bg-ball-600 hover:bg-ball-500 text-white text-sm font-semibold px-4 py-2 transition-colors uppercase tracking-wide"
+            className="inline-flex items-center gap-1.5 bg-ball-600 hover:bg-ball-500 text-white text-sm font-semibold px-4 py-2 transition-colors uppercase tracking-wide cursor-pointer"
           >
             Book a Lesson
             <ChevronRight className="w-3.5 h-3.5" />
@@ -194,16 +197,16 @@ export default function LandingPage() {
       </div>
 
       {/* ── PRICING ──────────────────────────────────── */}
-      <section id="pricing" className="bg-navy-900 pt-12 pb-20">
+      <section id="pricing" className="bg-navy-900 py-20">
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <FadeIn>
             <h2
               className="font-heading font-bold uppercase text-white text-center mb-2"
-              style={{ fontSize: "clamp(2rem, 6vw, 4rem)", letterSpacing: "-0.01em" }}
+              style={{ fontSize: "clamp(2rem, 6vw, 3.5rem)", letterSpacing: "-0.01em" }}
             >
               Session Pricing
             </h2>
-            <p className="text-center text-gray-400 text-sm mb-10">
+            <p className="text-center text-gray-400 text-base mb-10">
               Payment collected at time of booking
             </p>
           </FadeIn>
@@ -295,7 +298,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── WHAT TO EXPECT ───────────────────────────── */}
-      <section className="bg-white py-20">
+      <section className="bg-white py-20 border-t-4 border-ball-600">
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <FadeIn>
             <h2
@@ -333,7 +336,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── ABOUT ────────────────────────────────────── */}
-      <section className="bg-navy-900 py-20">
+      <section className="bg-navy-900 py-20 border-t-4 border-ball-600">
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="flex flex-col md:flex-row md:gap-14 md:items-start">
             <FadeIn className="mb-10 md:mb-0 md:w-56 lg:w-64 flex-shrink-0">

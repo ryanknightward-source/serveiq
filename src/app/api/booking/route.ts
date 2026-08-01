@@ -66,11 +66,50 @@ export async function POST(request: NextRequest) {
   if (!preferredDate || !preferredTime || !parentName || !parentEmail || !student1Name || !student1Age) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
-  if (!parentEmail.includes("@")) {
+  if (!parentEmail.includes("@") || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parentEmail.trim())) {
     return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
   }
 
+  // Server-side input length limits
+  if (typeof parentName !== "string" || parentName.trim().length > 100) {
+    return NextResponse.json({ error: "Parent name must be under 100 characters" }, { status: 400 });
+  }
+  if (typeof parentEmail !== "string" || parentEmail.trim().length > 100) {
+    return NextResponse.json({ error: "Email must be under 100 characters" }, { status: 400 });
+  }
+  if (parentPhone && (typeof parentPhone !== "string" || parentPhone.length > 20)) {
+    return NextResponse.json({ error: "Phone number must be under 20 characters" }, { status: 400 });
+  }
+  if (typeof student1Name !== "string" || student1Name.trim().length > 100) {
+    return NextResponse.json({ error: "Student name must be under 100 characters" }, { status: 400 });
+  }
+  if (notes && (typeof notes !== "string" || notes.length > 500)) {
+    return NextResponse.json({ error: "Notes must be under 500 characters" }, { status: 400 });
+  }
+
+  // Age validation — must be integer 1-99
+  const age1 = parseInt(String(student1Age), 10);
+  if (isNaN(age1) || age1 < 1 || age1 > 99) {
+    return NextResponse.json({ error: "Student age must be between 1 and 99" }, { status: 400 });
+  }
+
   const is2Kids = lessonTypeId === "60min-2kids";
+
+  if (is2Kids) {
+    if (!student2Name || typeof student2Name !== "string" || student2Name.trim().length === 0) {
+      return NextResponse.json({ error: "Student 2 name is required for 2-kid sessions" }, { status: 400 });
+    }
+    if (student2Name.trim().length > 100) {
+      return NextResponse.json({ error: "Student 2 name must be under 100 characters" }, { status: 400 });
+    }
+    if (!student2Age) {
+      return NextResponse.json({ error: "Student 2 age is required for 2-kid sessions" }, { status: 400 });
+    }
+    const age2 = parseInt(String(student2Age), 10);
+    if (isNaN(age2) || age2 < 1 || age2 > 99) {
+      return NextResponse.json({ error: "Student 2 age must be between 1 and 99" }, { status: 400 });
+    }
+  }
 
   const { data, error } = await supabase
     .from("bookings")
@@ -82,9 +121,9 @@ export async function POST(request: NextRequest) {
       parent_email: parentEmail,
       parent_phone: parentPhone || null,
       student1_name: student1Name,
-      student1_age: parseInt(student1Age, 10),
+      student1_age: age1,
       student2_name: is2Kids ? student2Name || null : null,
-      student2_age: is2Kids && student2Age ? parseInt(student2Age, 10) : null,
+      student2_age: is2Kids && student2Age ? parseInt(String(student2Age), 10) : null,
       notes: notes || null,
       payment_status: "pending",
     })

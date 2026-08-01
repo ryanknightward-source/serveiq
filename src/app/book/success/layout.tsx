@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Leads",
+  title: "Booking Confirmed",
 };
 
-export default function LeadsLayout({
+export default function SuccessLayout({
   children,
 }: {
   children: React.ReactNode;

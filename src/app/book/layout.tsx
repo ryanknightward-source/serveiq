@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: "Book a Lesson",
 };
 
-export default function DashboardLayout({
+export default function BookLayout({
   children,
 }: {
   children: React.ReactNode;

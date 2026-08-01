@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Follow-Ups",
+  title: "Booking Cancelled",
 };
 
-export default function FollowUpsLayout({
+export default function CancelLayout({
   children,
 }: {
   children: React.ReactNode;
