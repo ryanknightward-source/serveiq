@@ -362,21 +362,18 @@ export default function LandingPage() {
                 Ryan Ward
               </h2>
               <p className="text-gray-300 text-base leading-relaxed mb-4">
-                I played D1 baseball at the University of Arkansas and then
-                the University of San Diego. When I was done playing, I wasn&apos;t
-                done with baseball. Teaching it is genuinely something I look
-                forward to.
+                I played D1 baseball at the University of Arkansas and the
+                University of San Diego. After college I started coaching
+                and have been doing it since.
               </p>
               <p className="text-gray-300 text-base leading-relaxed mb-4">
-                I work with all ages and skill levels. That means the 7-year-old
-                who just got his first glove and the high school junior trying
-                to get noticed by college programs. I&apos;m not running a cookie-cutter
-                drill session. I watch your kid, figure out what they actually
-                need work on, and we go from there.
+                I work with players of all ages and skill levels, from beginners
+                to high schoolers working toward college ball. Every session
+                is tailored to what that player needs.
               </p>
               <p className="text-gray-300 text-base leading-relaxed mb-8">
-                We meet at fields in Coronado and San Diego. Book online and
-                I&apos;ll confirm your time within 24 hours.
+                Lessons are at local fields in Coronado and San Diego. Book
+                online and I&apos;ll confirm within 24 hours.
               </p>
               <div className="flex items-center gap-2 text-gray-500 text-sm">
                 <MapPin className="w-3.5 h-3.5" />
